@@ -1,0 +1,23 @@
+{
+  "name": "disco_bot",
+  "version": "1.0.0",
+  "description": "Example discord music bot",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "babel-tape-runner **/*.test.js | faucet"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "music"
+  ],
+  "author": "PartyLich",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^11.5.1",
+    "ffmpeg-static": "^2.4.0",
+    "opusscript": "0.0.6",
+    "ytdl-core": "^0.29.2"
+  }
+}
