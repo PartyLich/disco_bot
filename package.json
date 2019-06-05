@@ -19,5 +19,10 @@
     "ffmpeg-static": "^2.4.0",
     "opusscript": "0.0.6",
     "ytdl-core": "^0.29.2"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-google": "^0.13.0",
+    "tape": "^4.10.2"
   }
 }
