@@ -19,12 +19,9 @@ client.once('disconnect', () => {
 
 // message event listener
 client.on('message', async (message) => {
-  // dont respond to self
-  if (message.author.bot) {
-    return;
-  }
   // dont respond if prefix is missing
-  if (!message.content.startsWith(prefix)) {
+  // dont respond to self
+  if (!message.content.startsWith(prefix) || message.author.bot) {
     return;
   }
 
@@ -131,13 +128,14 @@ function play(guild, song) {
     return;
   }
   // start playback using the playStream() function and the URL of our song.
+  const opts = {filter: 'audioonly'};
+  const streamOptions = {seek: 0, volume: 1};
+  const songStream = ytdl(song.url, opts);
   const dispatcher = serverQueue.connection
-      .playStream(ytdl(song.url))
+      .playStream(songStream, streamOptions)
       .on('end', () => {
-        console.log('Playback ended');
-        // remove completed song from queue
-        // serverQueue.songs.shift();
-        // play the next song
+        console.log(`Playback ended: ${song.title}`);
+        // play the next song and remove completed song from queue
         play(guild, serverQueue.songs.shift());
       })
       .on('error', (error) => {
