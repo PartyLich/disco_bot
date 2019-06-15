@@ -152,5 +152,22 @@ function skip(message, serverQueue) {
   serverQueue.connection.dispatcher.end();
 }
 
+function stop(message, serverQueue) {
+  if (!message.member.voiceChannel) {
+    return message.channel.send(
+        'You have to be in a voice channel to stop the music!'
+    );
+  }
+  if (!serverQueue) {
+    return message.channel.send(
+        `(There is no song to stop)`
+    );
+  }
 
-function stop(message, serverQueue) {}
+  serverQueue.songs = [];
+  serverQueue.connection.dispatcher.end();
+  return message.channel.send(
+      `(playback stopped)`
+  );
+}
+
