@@ -30,7 +30,7 @@ client.on('message', async (message) => {
 
   // check command to execute
   const serverQueue = queue.get(message.guild.id);
-  const command = message.content.substr(0, prefix.length + 4);
+  const command = message.content.split(' ')[0];
 
   switch (command) {
     case `${prefix}play`:
