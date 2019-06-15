@@ -35,18 +35,22 @@ client.on('message', async (message) => {
   switch (command) {
     case `${prefix}play`:
       execute(message, serverQueue);
+      cleanMessage(message);
       return;
 
     case `${prefix}skip`:
       skip(message, serverQueue);
+      cleanMessage(message);
       return;
 
     case `${prefix}stop`:
       stop(message, serverQueue);
+      cleanMessage(message);
       return;
 
     case `${prefix}vol`:
       louder(message, serverQueue);
+      cleanMessage(message);
       return;
 
     default:
@@ -220,4 +224,12 @@ function louder(message, serverQueue) {
     );
     return message.channel.send(`${response}`);
   }
+}
+function cleanMessage(message) {
+  message
+      .delete()
+      .then((message) =>
+        console.log(`Deleted message from ${message.author.username}`)
+      )
+      .catch((e) => console.error(e));
 }
