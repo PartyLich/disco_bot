@@ -50,6 +50,11 @@ client.on('message', async (message) => {
       cleanMessage(message);
       return;
 
+    case `${prefix}repeat`:
+      repeat(message, serverQueue);
+      cleanMessage(message);
+      return;
+
     case `${prefix}vol`:
       louder(message, serverQueue);
       cleanMessage(message);
@@ -243,4 +248,22 @@ function cleanMessage(message) {
         console.log(`Deleted message from ${message.author.username}`)
       )
       .catch((e) => console.error(e));
+}
+
+function repeat(message, serverQueue) {
+  if (!(serverQueue && serverQueue.songs)) {
+    message.channel.send(
+        `There's no song to repeat ${message.author.username}.`
+    );
+    return;
+  }
+
+  const song = serverQueue.songs[0];
+
+  serverQueue.songs.unshift(song);
+  return message.channel.send(
+      `Repeating ${song.title} for ${
+        message.author.username
+      }`
+  );
 }
