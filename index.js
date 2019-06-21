@@ -45,6 +45,11 @@ client.on('message', async (message) => {
       cleanMessage(message);
       return;
 
+    case `${prefix}next`:
+      next(message, serverQueue);
+      cleanMessage(message);
+      return;
+
     case `${prefix}vol`:
       louder(message, serverQueue);
       cleanMessage(message);
@@ -175,6 +180,14 @@ function stop(message, serverQueue) {
   return message.channel.send(
       `(playback stopped)`
   );
+}
+
+function next(message, {songs = []} = {}) {
+  if (songs.length < 2) {
+    return message.channel.send(`There's nothing else in the queue.`);
+  }
+
+  return message.channel.send(`${songs[1].title} is coming up next!`);
 }
 
 function louder(message, serverQueue) {
