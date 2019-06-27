@@ -299,3 +299,7 @@ function help(message) {
       `${message.author.username}, I can do the following:\n${commandList}`
   );
 }
+
+function randInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
