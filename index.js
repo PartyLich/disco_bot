@@ -1,3 +1,4 @@
+import fs from 'fs';
 import Discord from 'discord.js';
 import ytdl from 'ytdl-core';
 import {prefix, token} from './config.json';
@@ -8,6 +9,20 @@ import {cleanMessage} from './cleanMessage.js';
 // create client
 const client = new Discord.Client();
 client.login(token);
+
+// import client commands
+client.commands = new Discord.Collection();
+const commandFiles = fs
+    .readdirSync('./commands')
+    .filter((file) => file.endsWith('.js'));
+for (const file of commandFiles) {
+  const command = require(`./commands/${file}`);
+
+  // set a new item in the Collection with the key as the command name
+  // and the value as the exported module
+  client.commands.set(command.name, command);
+  console.log(`Added command ${command.name}`);
+}
 
 // create a map with the name of the queue where we save all the songs we type
 // in the chat.
