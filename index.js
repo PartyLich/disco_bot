@@ -3,6 +3,7 @@ import ytdl from 'ytdl-core';
 import {prefix, token} from './config.json';
 import {DIALOG} from './dialog.json';
 import {randInt} from './randInt.js';
+import {cleanMessage} from './cleanMessage.js';
 
 // create client
 const client = new Discord.Client();
@@ -301,20 +302,6 @@ function louder(message, serverQueue) {
     );
     return message.channel.send(`${response}`);
   }
-}
-
-/**
- * Remove messages with executed commands
- * @param  {Message} message [description]
- */
-function cleanMessage(message) {
-  // Delete a message
-  message
-      .delete()
-      .then((message) =>
-        console.log(`Deleted message from ${message.author.username}`)
-      )
-      .catch((e) => console.error(e));
 }
 
 /**
