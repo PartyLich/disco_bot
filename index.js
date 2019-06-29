@@ -57,11 +57,6 @@ client.on('message', async (message) => {
       cleanMessage(message);
       return;
 
-    case `${prefix}next`:
-      next(message, serverQueue);
-      cleanMessage(message);
-      return;
-
     case `${prefix}repeat`:
       repeat(message, serverQueue);
       cleanMessage(message);
@@ -187,20 +182,6 @@ function play(guild, song) {
         console.error(error);
       });
   dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
-}
-
-/**
- * Respond with the next song in the queue
- * @param  {Message}   message     The Discord message we're responding to
- * @param  {Object}   serverQueue the contract for our song queue
- * @return {Promise}             Promise for the bot's reply message
- */
-function next(message, {songs = []} = {}) {
-  if (songs.length < 2) {
-    return message.channel.send(`There's nothing else in the queue.`);
-  }
-
-  return message.channel.send(`${songs[1].title} is coming up next!`);
 }
 
 /**
