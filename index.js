@@ -57,11 +57,6 @@ client.on('message', async (message) => {
       cleanMessage(message);
       return;
 
-    case `${prefix}stop`:
-      stop(message, serverQueue);
-      cleanMessage(message);
-      return;
-
     case `${prefix}next`:
       next(message, serverQueue);
       cleanMessage(message);
@@ -192,34 +187,6 @@ function play(guild, song) {
         console.error(error);
       });
   dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
-}
-
-
-/**
- * End playback of current song and clear queue
- * @param  {Message} message     The Discord message we're responding to
- * @param  {Object} serverQueue the contract for our song queue
- * @return {Promise}             Promise for the bot's reply message
- */
-function stop(message, serverQueue) {
-  if (!message.member.voiceChannel) {
-    return message.channel.send(
-        'You have to be in a voice channel to stop the music!'
-    );
-  }
-  if (!serverQueue) {
-    const dialog = DIALOG.stopNoQueue;
-    return message.channel.send(
-        `${dialog[randInt(dialog.length - 1)]} (There is no song to stop)`
-    );
-  }
-
-  const dialog = DIALOG.stop;
-  serverQueue.songs = [];
-  serverQueue.connection.dispatcher.end();
-  return message.channel.send(
-      `${dialog[randInt(dialog.length - 1)]} (playback stopped)`
-  );
 }
 
 /**
