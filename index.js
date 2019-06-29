@@ -2,6 +2,7 @@ import Discord from 'discord.js';
 import ytdl from 'ytdl-core';
 import {prefix, token} from './config.json';
 import {DIALOG} from './dialog.json';
+import {randInt} from './randInt.js';
 
 // create client
 const client = new Discord.Client();
@@ -370,13 +371,4 @@ function help(message) {
   return message.channel.send(
       `${message.author.username}, I can do the following:\n${commandList}`
   );
-}
-
-/**
- * Get a random int between 0 and max
- * @param  {Number} max maximum integer to return
- * @return {Number}     returns and integer between 0 and max
- */
-function randInt(max) {
-  return Math.floor(Math.random() * Math.floor(max));
 }
