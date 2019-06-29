@@ -7,6 +7,10 @@ const {DIALOG} = require('./dialog.json');
 const client = new Discord.Client();
 client.login(token);
 
+// create a map with the name of the queue where we save all the songs we type
+// in the chat.
+const queue = new Map();
+
 // add basic listeners
 client.once('ready', () => {
   console.log('ready');
@@ -72,6 +76,13 @@ client.on('message', async (message) => {
   }
 });
 
+/**
+ * Check if the user is in a voice chat and if the bot has the right permission.
+ *  If not we write an error message and return.
+ * @param  {Message} message     The Discord message we're responding to
+ * @param  {Object} serverQueue the contract for our song queue
+ * @return {Promise}             Promise for the bot's reply message
+ */
 async function execute(message, serverQueue) {
   const args = message.content.split(' ');
   const voiceChannel = message.member.voiceChannel;
@@ -105,7 +116,7 @@ async function execute(message, serverQueue) {
     const queueContract = {
       textChannel: message.channel,
       voiceChannel: voiceChannel,
-      connection: null,
+      connection: null, // {VoiceConnection}
       songs: [],
       volume: 5,
       playing: true,
@@ -141,6 +152,11 @@ async function execute(message, serverQueue) {
   }
 }
 
+/**
+ * Start playback of a song
+ * @param  {!guild} guild  The server to play in
+ * @param  {!Object} song The song obj to be played
+ */
 function play(guild, song) {
   const serverQueue = queue.get(guild.id);
   // if the song is empty, leave the voice channel and delete the queue.
@@ -166,6 +182,12 @@ function play(guild, song) {
   dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
 }
 
+/**
+ * End playback of current song
+ * @param  {Message} message     The Discord message we're responding to
+ * @param  {Object} serverQueue the contract for our song queue
+ * @return {Promise}             Promise for the bot's reply message
+ */
 function skip(message, serverQueue) {
   const dialog = DIALOG.skip;
   if (!message.member.voiceChannel) {
@@ -184,6 +206,12 @@ function skip(message, serverQueue) {
   );
 }
 
+/**
+ * End playback of current song and clear queue
+ * @param  {Message} message     The Discord message we're responding to
+ * @param  {Object} serverQueue the contract for our song queue
+ * @return {Promise}             Promise for the bot's reply message
+ */
 function stop(message, serverQueue) {
   if (!message.member.voiceChannel) {
     return message.channel.send(
@@ -205,6 +233,12 @@ function stop(message, serverQueue) {
   );
 }
 
+/**
+ * Respond with the next song in the queue
+ * @param  {Message}   message     The Discord message we're responding to
+ * @param  {Object}   serverQueue the contract for our song queue
+ * @return {Promise}             Promise for the bot's reply message
+ */
 function next(message, {songs = []} = {}) {
   if (songs.length < 2) {
     return message.channel.send(`There's nothing else in the queue.`);
@@ -213,6 +247,12 @@ function next(message, {songs = []} = {}) {
   return message.channel.send(`${songs[1].title} is coming up next!`);
 }
 
+/**
+ * Adjust the stream volume
+ * @param  {Message} message     The Discord message we're responding to
+ * @param  {Object} serverQueue the contract for our song queue
+ * @return {Promise}             Promise for the bot's reply message
+ */
 function louder(message, serverQueue) {
   if (!serverQueue) {
     return message.channel.send(
@@ -261,7 +301,13 @@ function louder(message, serverQueue) {
     return message.channel.send(`${response}`);
   }
 }
+
+/**
+ * Remove messages with executed commands
+ * @param  {Message} message [description]
+ */
 function cleanMessage(message) {
+  // Delete a message
   message
       .delete()
       .then((message) =>
@@ -270,6 +316,12 @@ function cleanMessage(message) {
       .catch((e) => console.error(e));
 }
 
+/**
+ * Repeat the current song
+ * @param  {Message} message     The Discord message we're responding to
+ * @param  {Object} serverQueue the contract for our song queue
+ * @return {Promise}             Promise for the bot's reply message
+ */
 function repeat(message, serverQueue) {
   if (!(serverQueue && serverQueue.songs)) {
     message.channel.send(
@@ -289,6 +341,11 @@ function repeat(message, serverQueue) {
   );
 }
 
+/**
+ * List available commands
+ * @param  {Message} message     The Discord message we're responding to
+ * @return {Promise}             Promise for the bot's reply message
+ */
 function help(message) {
   let commandList = [
     '```',
@@ -315,6 +372,11 @@ function help(message) {
   );
 }
 
+/**
+ * Get a random int between 0 and max
+ * @param  {Number} max maximum integer to return
+ * @return {Number}     returns and integer between 0 and max
+ */
 function randInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
