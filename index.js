@@ -1,7 +1,7 @@
-const Discord = require('discord.js');
-const ytdl = require('ytdl-core');
-const {prefix, token} = require('./config.json');
-const {DIALOG} = require('./dialog.json');
+import Discord from 'discord.js';
+import ytdl from 'ytdl-core';
+import {prefix, token} from './config.json';
+import {DIALOG} from './dialog.json';
 
 // create client
 const client = new Discord.Client();
