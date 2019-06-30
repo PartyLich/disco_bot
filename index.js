@@ -57,11 +57,6 @@ client.on('message', async (message) => {
       cleanMessage(message);
       return;
 
-    case `${prefix}repeat`:
-      repeat(message, serverQueue);
-      cleanMessage(message);
-      return;
-
     case `${prefix}vol`:
       louder(message, serverQueue);
       cleanMessage(message);
@@ -237,31 +232,6 @@ function louder(message, serverQueue) {
     );
     return message.channel.send(`${response}`);
   }
-}
-
-/**
- * Repeat the current song
- * @param  {Message} message     The Discord message we're responding to
- * @param  {Object} serverQueue the contract for our song queue
- * @return {Promise}             Promise for the bot's reply message
- */
-function repeat(message, serverQueue) {
-  if (!(serverQueue && serverQueue.songs)) {
-    message.channel.send(
-        `There's no song to repeat ${message.author.username}.`
-    );
-    return;
-  }
-
-  const dialog = DIALOG.repeat;
-  const song = serverQueue.songs[0];
-
-  serverQueue.songs.unshift(song);
-  return message.channel.send(
-      `${dialog[randInt(dialog.length - 1)]} repeating ${song.title} for ${
-        message.author.username
-      }`
-  );
 }
 
 /**
