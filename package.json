@@ -1,10 +1,11 @@
 {
   "name": "disco_bot",
-  "version": "1.0.0",
+  "version": "0.3.0",
   "description": "Example discord music bot",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "startb": "babel-node index.js",
     "test": "babel-tape-runner **/*.test.js | faucet"
   },
   "keywords": [
@@ -15,14 +16,24 @@
   "author": "PartyLich",
   "license": "ISC",
   "dependencies": {
+    "bufferutil": "^4.0.1",
     "discord.js": "^11.5.1",
+    "ffmpeg": "0.0.4",
     "ffmpeg-static": "^2.4.0",
-    "opusscript": "0.0.6",
+    "node-opus": "^0.3.2",
     "ytdl-core": "^0.29.2"
   },
   "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/node": "^7.4.5",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/preset-env": "^7.4.5",
+    "babel-preset-env": "^1.7.0",
+    "babel-tape-runner": "^3.0.0",
     "eslint": "^5.16.0",
     "eslint-config-google": "^0.13.0",
+    "nodemon": "^1.19.1",
     "tape": "^4.10.2"
   }
 }
