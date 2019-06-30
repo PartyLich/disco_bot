@@ -49,16 +49,26 @@ client.on('message', async (message) => {
 
   // check command to execute
   const serverQueue = queue.get(message.guild.id);
-  const command = message.content.split(' ')[0];
+  const args = message.content.slice(prefix.length).split(/ +/);
+  const command = args.shift().toLowerCase();
+
+  if (client.commands.has(command)) {
+    try {
+      client.commands.get(command).execute(message, {serverQueue, args});
+      cleanMessage(message);
+    } catch (e) {
+      console.error(e);
+      message.reply('There was an error executing that command');
+    }
+  }
 
   switch (command) {
-    case `${prefix}play`:
-      execute(message, serverQueue);
+    case `play`:
+      execute(message, {serverQueue, args});
       cleanMessage(message);
       return;
 
     default:
-      message.channel.send('You need to enter a valid command!');
   }
 });
 
@@ -69,8 +79,7 @@ client.on('message', async (message) => {
  * @param  {Object} serverQueue the contract for our song queue
  * @return {Promise}             Promise for the bot's reply message
  */
-async function execute(message, serverQueue) {
-  const args = message.content.split(' ');
+async function execute(message, {serverQueue, args}) {
   const voiceChannel = message.member.voiceChannel;
 
   // check if user is in voice channel
@@ -88,7 +97,7 @@ async function execute(message, serverQueue) {
   }
 
   // use ytdl library to get the song information from the youtube link
-  const songInfo = await ytdl.getInfo(args[1]);
+  const songInfo = await ytdl.getInfo(args[0]);
   const song = {
     title: songInfo.title,
     url: songInfo.video_url,
