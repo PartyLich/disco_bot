@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const ytdl = require('ytdl-core');
 const {prefix, token} = require('./config.json');
+const {DIALOG} = require('./dialog.json');
 
 // create client
 const client = new Discord.Client();
@@ -96,6 +97,8 @@ async function execute(message, serverQueue) {
     url: songInfo.video_url,
   };
 
+  const dialog = DIALOG.play;
+
   // check if music is already playing.
   if (!serverQueue) {
     // Create the contract for our queue
@@ -120,7 +123,8 @@ async function execute(message, serverQueue) {
       // Start a song
       play(message.guild, queueContract.songs[0]);
 
-      return message.channel.send(`${song.title} has been added to the queue!`);
+      message.channel.send(`${song.title} has been added to the queue!`);
+      return message.channel.send(`${dialog[randInt(dialog.length - 1)]}`);
     } catch (err) {
       // Print error message if the bot fails to join the voicechat
       console.error(err);
@@ -131,7 +135,9 @@ async function execute(message, serverQueue) {
     // Add the song to our existing serverQueue and send a success message.
     serverQueue.songs.push(song);
     console.log(serverQueue.songs);
-    return message.channel.send(`${song.title} has been added to the queue!`);
+
+    message.channel.send(`${song.title} has been added to the queue!`);
+    return message.channel.send(`${dialog[randInt(dialog.length - 1)]}`);
   }
 }
 
@@ -161,6 +167,7 @@ function play(guild, song) {
 }
 
 function skip(message, serverQueue) {
+  const dialog = DIALOG.skip;
   if (!message.member.voiceChannel) {
     return message.channel.send(
         'Can\'t stop won\'t stop! (You have to be in a voice channel to stop the music!)'
@@ -172,6 +179,9 @@ function skip(message, serverQueue) {
   }
 
   serverQueue.connection.dispatcher.end();
+  message.channel.send(
+      `${dialog[randInt(dialog.length - 1)]} (skipping to the next song)`
+  );
 }
 
 function stop(message, serverQueue) {
@@ -181,15 +191,17 @@ function stop(message, serverQueue) {
     );
   }
   if (!serverQueue) {
+    const dialog = DIALOG.stopNoQueue;
     return message.channel.send(
-        `(There is no song to stop)`
+        `${dialog[randInt(dialog.length - 1)]} (There is no song to stop)`
     );
   }
 
+  const dialog = DIALOG.stop;
   serverQueue.songs = [];
   serverQueue.connection.dispatcher.end();
   return message.channel.send(
-      `(playback stopped)`
+      `${dialog[randInt(dialog.length - 1)]} (playback stopped)`
   );
 }
 
@@ -208,12 +220,14 @@ function louder(message, serverQueue) {
     );
   }
 
+  const dialogUp = DIALOG.volumeUp;
+  const dialogDown = DIALOG.volumeDown;
   const uppers = new Set(['up', 'louder']);
   const downers = new Set(['down', 'quieter']);
   const args = message.content.split(' ');
   const volume = parseInt(args[1]);
-  const volUp = `(volume up)`;
-  const volDown = `(volume down)`;
+  const volUp = `${dialogUp[randInt(dialogUp.length - 1)]} (volume up)`;
+  const volDown = `${dialogDown[randInt(dialogDown.length - 1)]} (volume down)`;
 
   if (isNaN(volume)) {
     if (uppers.has(args[1])) {
@@ -264,11 +278,12 @@ function repeat(message, serverQueue) {
     return;
   }
 
+  const dialog = DIALOG.repeat;
   const song = serverQueue.songs[0];
 
   serverQueue.songs.unshift(song);
   return message.channel.send(
-      `Repeating ${song.title} for ${
+      `${dialog[randInt(dialog.length - 1)]} repeating ${song.title} for ${
         message.author.username
       }`
   );
@@ -298,4 +313,8 @@ function help(message) {
   return message.channel.send(
       `${message.author.username}, I can do the following:\n${commandList}`
   );
+}
+
+function randInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
 }

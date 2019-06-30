@@ -1,0 +1,54 @@
+{
+  "DIALOG": {
+    "play": [
+      "This is gonna make you feel better.",
+      "Yeah, let's pick it up.",
+      "Let's up the tempo.",
+      "Move to the beat.",
+      "Oh, oh, oh, time to accelerate.",
+      "Yeeeaah, let's move it people.",
+      "Yeah, let's party.",
+      "That's how you get tinnitus!",
+      "Aw, man, I'm loving this.",
+      "Ah, look at this team! We're gonna do great.",
+      "Give yourself to the rhythm."
+    ],
+
+    "skip": ["And the beat goes on.", "I hear you.", "Okay.", "Got it."],
+
+    "stopNoQueue": [
+      "Is this thing on?",
+      "I hope you didn’t work too hard on that.",
+      "You feeling okay?"
+    ],
+
+    "stop": [
+      "Having trouble keeping up?",
+      "You lost the beat.",
+      "Tchau.",
+      "Falou."
+    ],
+
+    "volumeUp": [
+      "Haha, amp it up.",
+      "Oh, this is my jam!",
+      "Oh, turn it up.",
+      "Pump up the volume.",
+      "Raisin' the volume!",
+      "Woo, you feel that?",
+      "Ooh, you hear that?"
+    ],
+
+    "volumeDown": [
+      "Come on, keep your head up.",
+      "That's not right!",
+      "Oh, hey hey.",
+      "Ugh."
+    ],
+
+    "repeat": [
+      "I'll take more where that came from!",
+      "I need to learn to let go... Next time!"
+    ]
+  }
+}
