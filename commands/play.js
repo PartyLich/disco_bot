@@ -21,7 +21,7 @@ export {
  */
 async function execute(message, {serverQueue, args}) {
   const voiceChannel = message.member.voiceChannel;
-  const queue = args[args.length -1];
+  const queue = args[args.length - 1];
 
   // check if user is in voice channel
   if (!voiceChannel) {
