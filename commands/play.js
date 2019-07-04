@@ -130,12 +130,19 @@ async function play(message, {serverQueue, args: [song, ...args]} = {}) {
 
   dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
 
+  /**
+   * Play the next song and remove completed song from queue
+   */
   function onEnd() {
     console.log(`Playback ended: ${song.title}`);
     serverQueue.songs.shift();
     play(message, {serverQueue, args: [serverQueue.songs[0], queue]});
   }
 
+  /**
+   * Handle error raised by dispatcher
+   * @param  {String} e error that was thrown/raised
+   */
   function onError(e) {
     console.error(e);
   }
