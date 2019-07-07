@@ -6,8 +6,10 @@
   "scripts": {
     "start": "node index.js",
     "startb": "babel-node index.js",
-    "mon": "nodemon --exec babel-node index.js",
-    "test": "babel-tape-runner **/*.test.js | faucet"
+    "mon": "nodemon --exec babel-node src/index.js",
+    "test": "babel-tape-runner **/*.test.js | faucet",
+    "clean": "rimraf dist",
+    "build": "npm run clean && babel src -d dist --copy-files --ignore \"src/**/*.spec.js\",\"src/**/*.test.js\""
   },
   "keywords": [
     "discord",
