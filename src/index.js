@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 import Discord from 'discord.js';
 import {prefix, token} from './config.json';
 import {cleanMessage} from './cleanMessage.js';
@@ -10,7 +11,7 @@ client.login(token);
 // import client commands
 client.commands = new Discord.Collection();
 const commandFiles = fs
-    .readdirSync('./src/commands')
+    .readdirSync(path.join(__dirname, '.', 'commands'))
     .filter((file) => file.endsWith('.js'));
 
 for (const file of commandFiles) {
