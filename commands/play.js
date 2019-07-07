@@ -1,7 +1,7 @@
-import path from 'path';
 import ytdl from 'ytdl-core';
 import {DIALOG} from '../dialog.json';
 import {randInt} from '../randInt.js';
+import {playVoiceLine} from '../playVoiceLine.js';
 
 const name = 'play';
 const description = 'Play the requested song';
@@ -21,7 +21,7 @@ export {
  */
 async function execute(message, {serverQueue, args}) {
   const voiceChannel = message.member.voiceChannel;
-  const queue = args[args.length -1];
+  const queue = args[args.length - 1];
 
   // check if user is in voice channel
   if (!voiceChannel) {
@@ -39,10 +39,7 @@ async function execute(message, {serverQueue, args}) {
 
   // use ytdl library to get the song information from the youtube link
   const songInfo = await ytdl.getInfo(args[0]);
-  console.log(songInfo);
-  // use ffmpeg to mix song and voiceline
   const songFile = '';
-  // const songFile = await '';
 
   const song = {
     title: songInfo.title,
@@ -110,6 +107,8 @@ async function play(message, {serverQueue, args: [song, ...args]} = {}) {
   // if the song is empty, leave the voice channel and delete the queue.
   const queue = args[args.length - 1];
   if (!song) {
+    await playVoiceLine(serverQueue, 'stop');
+
     serverQueue.voiceChannel.leave();
     queue.delete(message.guild.id);
     return false;
@@ -119,24 +118,34 @@ async function play(message, {serverQueue, args: [song, ...args]} = {}) {
   const opts = {filter: 'audioonly'};
   const streamOptions = {seek: 0, volume: 1};
   const songStream = ytdl(song.url, opts);
-  let dispatcher = serverQueue.connection
-      .playFile(path.resolve('./lucio/Lúcio - Major Buzzkill.m4a'))
-      .on('end', () => {
-        dispatcher = serverQueue.connection
-            .playStream(songStream, streamOptions)
-            .on('end', () => {
-              console.log(`Playback ended: ${song.title}`);
-              // play the next song and remove completed song from queue
-              serverQueue.songs.shift();
-              play(message, {serverQueue, args: [serverQueue.songs[0], queue]});
-            })
-            .on('error', (error) => {
-              console.error(error);
-            });
-      })
-      .on('error', (error) => {
-        console.error(error);
-      });
+  // Play a voice line
+  await playVoiceLine(serverQueue, 'play');
+  let dispatcher;
+
+  if (song.file === '') {
+    dispatcher = serverQueue.connection.playStream(songStream, streamOptions);
+    dispatcher.on('end', onEnd).on('error', onError);
+  } else {
+    dispatcher = serverQueue.connection.playFile(song.file);
+    dispatcher.on('end', onEnd).on('error', onError);
+  }
 
   dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
+
+  /**
+   * Play the next song and remove completed song from queue
+   */
+  function onEnd() {
+    console.log(`Playback ended: ${song.title}`);
+    serverQueue.songs.shift();
+    play(message, {serverQueue, args: [serverQueue.songs[0], queue]});
+  }
+
+  /**
+   * Handle error raised by dispatcher
+   * @param  {String} e error that was thrown/raised
+   */
+  function onError(e) {
+    console.error(e);
+  }
 }

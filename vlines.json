@@ -1,0 +1,98 @@
+{
+  "VLINES": {
+    "play": [
+      "lucio/Lúcio - Awh Yea! 1.m4a",
+      "lucio/Lúcio - Awh Yea! 2.m4a",
+      "lucio/Lúcio - Awh Yea! 3.m4a",
+      "lucio/Lúcio - Back In The Mix.m4a",
+      "lucio/Lúcio - Check This Out.m4a",
+      "lucio/Lúcio - Come On, Let's Bring It Together.m4a",
+      "lucio/Lúcio - Double Time.m4a",
+      "lucio/Lúcio - Feel The Healing Beat.m4a",
+      "lucio/Lúcio - Get Hyped!.m4a",
+      "lucio/Lúcio - Give Yourself To The Rythm.m4a",
+      "lucio/Lúcio - Hey, Break Time's Over, Let's Get Moving.m4a",
+      "lucio/Lúcio - I Am Lovin' This.m4a",
+      "lucio/Lúcio - I'm Feelin' Good.m4a",
+      "lucio/Lúcio - I'm Feelin' It.m4a",
+      "lucio/Lúcio - I'm In The Groove.m4a",
+      "lucio/Lúcio - I'm Feelin' Some Good Vibrations.m4a",
+      "lucio/Lúcio - I'm Just Getting Started.m4a",
+      "lucio/Lúcio - I Make This Look Easy.m4a",
+      "lucio/Lúcio - Let's Get Movin'.m4a",
+      "lucio/Lúcio - Let's Get This Party Started.m4a",
+      "lucio/Lúcio - Let's Hustle.m4a",
+      "lucio/Lúcio - Let's Drop The Beat.m4a",
+      "lucio/Lúcio - Let's Up The Tempo.m4a",
+      "lucio/Lúcio - Lúcio Commin' At You.m4a",
+      "lucio/Lúcio - Move To The Beat.m4a",
+      "lucio/Lúcio - Oh, Let's Break It Down!.m4a",
+      "lucio/Lúcio - Oh, Oh, Oh, Time To Accelerate.m4a",
+      "lucio/Lúcio - Oh Yea! 1.m4a",
+      "lucio/Lúcio - Oh Yea! 2.m4a",
+      "lucio/Lúcio - Oh Yea! 3.m4a",
+      "lucio/Lúcio - Oh Yea! 4.m4a"
+    ],
+
+    "skip": [
+      "lucio/Lúcio - And The Beat Goes On.m4a",
+      "lucio/Lúcio - Check Yourself.m4a",
+      "lucio/Lúcio - Get That Weak Stuff Outta' Here.m4a",
+      "lucio/Lúcio - Got It.m4a",
+      "lucio/Lúcio - I Hear You.m4a",
+      "lucio/Lúcio - I'm Not Hearin' That Noise.m4a",
+      "lucio/Lúcio - Okay.m4a"
+    ],
+
+    "stopNoQueue": [
+      "lucio/Lúcio - Hope You Didn't Work To Hard On That.m4a",
+      "lucio/Lúcio - Is This Thing On.m4a",
+      "lucio/Lúcio - Oh Wait.m4a"
+    ],
+
+    "stop": [
+      "lucio/Lúcio - Can't Keep Up.m4a",
+      "lucio/Lúcio - I Can't Even Take You Seriously Right Now.m4a",
+      "lucio/Lúcio - Major Buzzkill.m4a",
+      "lucio/Lúcio - Peace!.m4a",
+      "lucio/Lúcio - You Lost The Beat.m4a",
+      "lucio/Lúcio - You Havin' Trouble Keeping Up.m4a"
+    ],
+
+    "repeat": [
+      "lucio/Lúcio - Can't Stop, Won't Stop.m4a",
+      "lucio/Lúcio - I Could Do This All Day.m4a",
+      "lucio/Lúcio - I Must Have This Track On Repeat.m4a",
+      "lucio/Lúcio - I Need To Learn To Let Go, Next Time.m4a",
+      "lucio/Lúcio - I'll Take More Where That Came From.m4a",
+      "lucio/Lúcio - Let's Keep It Going.m4a",
+      "lucio/Lúcio - Let's Take It From The Top.m4a",
+      "lucio/Lúcio - Nothin's Gonna' Stop Me 1.m4a",
+      "lucio/Lúcio - Nothin's Gonna' Stop Me 2.m4a",
+      "lucio/Lúcio - Nothin's Gonna' Stop Me 3.m4a",
+      "lucio/Lúcio - Time For An Encore.m4a"
+    ],
+
+    "volumeUp": [
+      "lucio/Lúcio - Amp It Up.m4a",
+      "lucio/Lúcio - Boom! Haha.m4a",
+      "lucio/Lúcio - Boom!.m4a",
+      "lucio/Lúcio - It Goes To Eleven.m4a",
+      "lucio/Lúcio - Oh, Turn It Up.m4a",
+      "lucio/Lúcio - Pump Up The Volume.m4a",
+      "lucio/Lúcio - Raising The Volume.m4a",
+      "lucio/Lúcio - This Is My Jam.m4a",
+      "lucio/Lúcio - Woo, Do You Hear That.m4a",
+      "lucio/Lúcio - You Feel That.m4a"
+    ],
+
+    "volumeDown": [
+      "lucio/Lúcio - Aw, Man.m4a",
+      "lucio/Lúcio - Awh!.m4a",
+      "lucio/Lúcio - Awh, No Way.m4a",
+      "lucio/Lúcio - Oh No.m4a",
+      "lucio/Lúcio - Oh, Hey Hey.m4a",
+      "lucio/Lúcio - That's Not Right.m4a"
+    ]
+  }
+}
