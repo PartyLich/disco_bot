@@ -4,12 +4,13 @@
   "description": "Discord music bot featuring Lucio",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "startb": "babel-node index.js",
+    "start": "node src/index.js",
+    "startb": "babel-node src/index.js",
     "mon": "nodemon --exec babel-node src/index.js",
     "test": "babel-tape-runner **/*.test.js | faucet",
     "clean": "rimraf dist",
-    "build": "npm run clean && babel src -d dist --copy-files --ignore \"src/**/*.spec.js\",\"src/**/*.test.js\""
+    "build": "npm run clean && babel src -d dist --copy-files --ignore \"src/**/*.spec.js\",\"src/**/*.test.js\"",
+    "build:prod": "npm run clean && babel src -d dist --copy-files --ignore \"src/**/*.spec.js\",\"src/**/*.test.js\" && rimraf src"
   },
   "keywords": [
     "discord",
