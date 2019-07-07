@@ -107,6 +107,8 @@ async function play(message, {serverQueue, args: [song, ...args]} = {}) {
   // if the song is empty, leave the voice channel and delete the queue.
   const queue = args[args.length - 1];
   if (!song) {
+    await playVoiceLine(serverQueue, 'stop');
+
     serverQueue.voiceChannel.leave();
     queue.delete(message.guild.id);
     return false;
