@@ -1,25 +1,38 @@
 {
   "name": "disco_bot",
   "version": "0.3.0",
-  "description": "Example discord music bot",
+  "description": "Discord music bot featuring Lucio",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "startb": "babel-node index.js",
+    "mon": "nodemon --exec babel-node index.js",
     "test": "babel-tape-runner **/*.test.js | faucet"
   },
   "keywords": [
     "discord",
     "bot",
-    "music"
+    "music",
+    "overwatch"
   ],
   "author": "PartyLich",
   "license": "ISC",
+  "babel": {
+    "presets": [
+        [
+          "@babel/preset-env",
+          {
+            "useBuiltIns": "usage"
+          }
+        ]
+      ]
+  },
   "dependencies": {
     "bufferutil": "^4.0.1",
     "discord.js": "^11.5.1",
     "ffmpeg": "0.0.4",
     "ffmpeg-static": "^2.4.0",
+    "fluent-ffmpeg": "^2.1.2",
     "node-opus": "^0.3.2",
     "ytdl-core": "^0.29.2"
   },
@@ -29,7 +42,6 @@
     "@babel/node": "^7.4.5",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/preset-env": "^7.4.5",
-    "babel-preset-env": "^1.7.0",
     "babel-tape-runner": "^3.0.0",
     "eslint": "^5.16.0",
     "eslint-config-google": "^0.13.0",
