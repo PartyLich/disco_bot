@@ -30,6 +30,7 @@ function execute(message, {serverQueue, args} = {}) {
   const dialog = DIALOG.stop;
   serverQueue.songs = [];
   serverQueue.connection.dispatcher.end();
+
   return message.channel.send(
       `${dialog[randInt(dialog.length - 1)]} (playback stopped)`
   );
