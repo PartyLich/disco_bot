@@ -54,13 +54,15 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
+# dotenv environment variables file, other config
 .env
+src/config.json
 
 # next.js build output
 .next
 
 # extra audio files
+lucio/
 audio/
 
 # babel build
