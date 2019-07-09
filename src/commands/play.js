@@ -57,7 +57,7 @@ async function execute(message, {serverQueue, args}) {
       voiceChannel: voiceChannel,
       connection: null, // {VoiceConnection}
       songs: [],
-      volume: 5,
+      volume: 3,
       playing: true,
     };
     // Set the queue using our contract
