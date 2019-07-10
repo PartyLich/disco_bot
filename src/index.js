@@ -49,12 +49,15 @@ client.on('message', async (message) => {
   // check command to execute
   const serverQueue = queue.get(message.guild.id);
   const args = message.content.slice(prefix.length).split(/ +/);
-  const command = args.shift().toLowerCase();
+  const commandName = args.shift().toLowerCase();
+  const command =
+    client.commands.get(command) ||
+    client.commands.find((cmd) => cmd.alias && cmd.alias.includes(commandName));
 
-  if (client.commands.has(command)) {
+  if (command) {
     try {
       args.push(queue);
-      client.commands.get(command).execute(message, {serverQueue, args});
+      command.execute(message, {serverQueue, args});
       cleanMessage(message);
     } catch (e) {
       console.error(e);
