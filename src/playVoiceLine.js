@@ -10,10 +10,12 @@ import {randInt} from './randInt';
  */
 export function playVoiceLine(serverQueue, lineType) {
   const dialog = VLINES[lineType];
-  const voiceLine = path.resolve(dialog[randInt(dialog.length - 1)]);
+  const voiceLine = path.join(__dirname, '..', dialog[randInt(dialog.length - 1)]);
 
   return new Promise((resolve, reject) => {
     if (!serverQueue) reject(new Error('serverQueue cannot be null.'));
+
+    console.log(`playVoiceLine start: file ${voiceLine}`);
 
     serverQueue.connection
         .playFile(voiceLine)
