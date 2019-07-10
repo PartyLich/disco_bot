@@ -15,6 +15,8 @@ export function playVoiceLine(serverQueue, lineType) {
   return new Promise((resolve, reject) => {
     if (!serverQueue) reject(new Error('serverQueue cannot be null.'));
 
+    console.log(`playVoiceLine start: file ${voiceLine}`);
+
     serverQueue.connection
         .playFile(voiceLine)
         .on('end', () => {
