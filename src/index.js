@@ -30,6 +30,7 @@ const queue = new Map();
 // add basic listeners
 client.once('ready', () => {
   console.log('ready');
+  client.user.setActivity('some chill beats', {type: 'LISTENING'});
 });
 client.once('Reconnecting', () => {
   console.log('reconnecting...');

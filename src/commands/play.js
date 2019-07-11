@@ -5,6 +5,8 @@ import {getSongEmbed} from '../songEmbed';
 
 const name = 'play';
 const description = 'Play the requested song';
+const playActivity = 'those sicc beats';
+const idleActivity = 'some funky jams';
 
 export {
   name,
@@ -79,6 +81,9 @@ async function execute(message, {serverQueue, args}) {
       // Start a song
       play(message, {serverQueue, args: [serverQueue.songs[0], queue]});
 
+      // Update bot activity
+      message.client.user.setActivity(playActivity);
+
       return message.channel.send(
           getSongEmbed(song, 'queue')
       );
@@ -86,6 +91,7 @@ async function execute(message, {serverQueue, args}) {
       // Print error message if the bot fails to join the voicechat
       console.error(err);
       queue.delete(message.guild.id);
+      message.client.user.setActivity(idleActivity, {type: 'LISTENING'});
       return message.channel.send(err);
     }
   } else {
@@ -113,6 +119,7 @@ async function play(message, {serverQueue, args: [song, ...args]} = {}) {
     await playVoiceLine(serverQueue, 'stop');
 
     serverQueue.voiceChannel.leave();
+    message.client.user.setActivity(idleActivity, {type: 'LISTENING'});
     queue.delete(message.guild.id);
     return false;
   }
