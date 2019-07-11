@@ -1,7 +1,7 @@
 import {prefix} from '../config.json';
 
 const name = 'help';
-const description = '';
+const description = 'A list of the commands you can give me.';
 const alias = ['halp'];
 
 export {
@@ -17,27 +17,21 @@ export {
  * @return {Promise}             Promise for the bot's reply message
  */
 function execute(message) {
-  let commandList = [
-    '```',
-    `${prefix}play [youtube url]: add the specified url to the play queue`,
-    `  e.g. !play`,
-    `${prefix}skip: move to the next song immediately`,
-    `  e.g. !skip`,
-    `${prefix}stop: stop all playback`,
-    `  e.g. !stop`,
-    `${prefix}next: get the next song title in the queue`,
-    `  e.g. !next`,
-    `${prefix}repeat:  play the current song again`,
-    `  e.g.!repeat`,
-    `${prefix}vol [0-5, up, down]: adjust the volume`,
-    `  e.g. !vol 3`,
-    `${prefix}halp: The text you're reading right now! (alias: ${prefix}help)`,
-    '```',
-  ];
+  const {commands} = message.client;
+  const user = message.member.nickname;
+  const commandList = [];
 
-  commandList = commandList.reduce((prev, next) => prev + '\n' + next);
+  // build output string
+  commandList.push(`**${user}**, I can do the following:`);
+  commandList.push('```bash');
 
-  return message.channel.send(
-      `${message.author.username}, I can do the following:\n${commandList}`
-  );
+  for (const [, command] of commands) {
+    commandList.push(`${prefix + command.name} ${command.description}`);
+    if (command.alias) commandList.push(`  Aliases: ${command.alias}`);
+    if (command.usage) commandList.push(`  Usage: ${prefix + command.usage}`);
+  }
+
+  commandList.push('```');
+
+  return message.channel.send(commandList);
 }
