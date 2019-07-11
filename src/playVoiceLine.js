@@ -1,3 +1,4 @@
+import fs from 'fs';
 import path from 'path';
 import {VLINES} from './vlines.json';
 import {randInt} from './randInt';
@@ -18,7 +19,7 @@ export function playVoiceLine(serverQueue, lineType) {
     console.log(`playVoiceLine start: file ${voiceLine}`);
 
     serverQueue.connection
-        .playFile(voiceLine)
+        .playStream(fs.createReadStream(voiceLine))
         .on('end', () => {
           console.log('playVoiceLine end');
           resolve();
