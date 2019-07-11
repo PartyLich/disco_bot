@@ -17,7 +17,8 @@ export {
  * @return {Promise}             Promise for the bot's reply message
  */
 function execute(message) {
-  let commandList = [
+  const commandList = [
+    `${message.author.username}, I can do the following:`,
     '```',
     `${prefix}play [youtube url]: add the specified url to the play queue`,
     `  e.g. !play`,
@@ -35,9 +36,5 @@ function execute(message) {
     '```',
   ];
 
-  commandList = commandList.reduce((prev, next) => prev + '\n' + next);
-
-  return message.channel.send(
-      `${message.author.username}, I can do the following:\n${commandList}`
-  );
+  return message.channel.send(commandList);
 }
