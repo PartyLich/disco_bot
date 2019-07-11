@@ -51,7 +51,7 @@ client.on('message', async (message) => {
   const args = message.content.slice(prefix.length).split(/ +/);
   const commandName = args.shift().toLowerCase();
   const command =
-    client.commands.get(command) ||
+    client.commands.get(commandName) ||
     client.commands.find((cmd) => cmd.alias && cmd.alias.includes(commandName));
 
   if (command) {
