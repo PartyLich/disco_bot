@@ -1,7 +1,7 @@
 import {prefix} from '../config.json';
 
 const name = 'help';
-const description = '';
+const description = 'A list of the commands you can give me.';
 const alias = ['halp'];
 
 export {
