@@ -40,11 +40,16 @@ async function execute(message, {serverQueue, args}) {
   // use ytdl library to get the song information from the youtube link
   const songInfo = await ytdl.getInfo(args[0]);
   const songFile = '';
+  const lenSeconds = ('00' + (songInfo.length_seconds % 60)).slice(-2);
+  const lenMinutes = ('00' + Math.floor(songInfo.length_seconds / 60))
+      .slice(-2);
+  const lenString = `${lenMinutes}:${lenSeconds}`;
 
   const song = {
     title: songInfo.title,
     url: songInfo.video_url,
     file: songFile,
+    length: lenString,
   };
 
   const dialog = DIALOG.play;
