@@ -3,7 +3,7 @@ import {DIALOG} from './dialog.json';
 import {randInt} from './randInt.js';
 
 export function getSongEmbed(song, action) {
-  if (!song) return null;
+  if (!song || !action) return null;
 
   const dialog = DIALOG.play;
   const embed = new Discord.RichEmbed();
