@@ -2,6 +2,12 @@ import Discord from 'discord.js';
 import {DIALOG} from './dialog.json';
 import {randInt} from './randInt.js';
 
+/**
+ * Returns a RichEmbed object for the provided song
+ * @param  {!Object} song   The song to describe with this RichEmbed
+ * @param  {!String} action The action that caused this richEmbed request
+ * @return {RichEmbed}        a RichEmbed object for the provided song
+ */
 export function getSongEmbed(song, action) {
   if (!song || !action) return null;
 
