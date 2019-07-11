@@ -1,3 +1,5 @@
+import {getSongEmbed} from '../songEmbed';
+
 const name = 'next';
 const description = 'Respond with the next song in the queue';
 
@@ -19,5 +21,5 @@ function execute(message, {serverQueue: {songs = []}, args} = {}) {
     return message.channel.send(`There's nothing else in the queue.`);
   }
 
-  return message.channel.send(`${songs[1].title} is coming up next!`);
+  return message.channel.send(getSongEmbed(songs[1], 'next'));
 }

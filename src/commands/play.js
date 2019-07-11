@@ -1,7 +1,7 @@
 import ytdl from 'ytdl-core';
 import {DIALOG} from '../dialog.json';
-import {randInt} from '../randInt.js';
 import {playVoiceLine} from '../playVoiceLine.js';
+import {getSongEmbed} from '../songEmbed';
 
 const name = 'play';
 const description = 'Play the requested song';
@@ -80,8 +80,7 @@ async function execute(message, {serverQueue, args}) {
       play(message, {serverQueue, args: [serverQueue.songs[0], queue]});
 
       return message.channel.send(
-          `${dialog[randInt(dialog.length - 1)]}` +
-          `\n${song.title} has been added to the queue!`
+          getSongEmbed(song, 'queue')
       );
     } catch (err) {
       // Print error message if the bot fails to join the voicechat
@@ -95,8 +94,7 @@ async function execute(message, {serverQueue, args}) {
     console.log(serverQueue.songs);
 
     return message.channel.send(
-        `${dialog[randInt(dialog.length - 1)]}` +
-        `\n${song.title} has been added to the queue!`
+        getSongEmbed(song, 'queue')
     );
   }
 }
