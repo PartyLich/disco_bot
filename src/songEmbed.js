@@ -43,6 +43,11 @@ function getActionText(action) {
       info.description = `Coming up next!`;
       break;
 
+    case 'now':
+      info.title = `Playing right now`;
+      info.description = `Enjoy!`;
+      break;
+
     default:
   }
 
