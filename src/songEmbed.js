@@ -23,6 +23,11 @@ export function getSongEmbed(song, action) {
   return embed;
 }
 
+/**
+ * Returns object describing the initiating action
+ * @param  {!String} action The action that caused this richEmbed request
+ * @return {Object}        object describing the initiating action
+ */
 function getActionText(action) {
   const dialog = DIALOG.play;
   const info = {};
