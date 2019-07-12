@@ -26,6 +26,8 @@ function execute(message) {
   commandList.push('```bash');
 
   for (const [, command] of commands) {
+    if (command.secret) continue;
+
     commandList.push(`${prefix + command.name} ${command.description}`);
     if (command.alias) commandList.push(`  Aliases: ${command.alias}`);
     if (command.usage) commandList.push(`  Usage: ${prefix + command.usage}`);
