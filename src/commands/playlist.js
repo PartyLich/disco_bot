@@ -11,6 +11,12 @@ export {
   execute,
 };
 
+/**
+ * Display the upcoming songs in the queue
+ * @param  {Message} message     The Discord message we're responding to
+ * @param  {Object} serverQueue the contract for our song queue
+ * @return {Promise}             Promise for the bot's reply message
+ */
 function execute(message, {serverQueue: {songs = []}, args} = {}) {
   const embed = new Discord.RichEmbed().setTitle('Upcoming songs');
   const list = [];
