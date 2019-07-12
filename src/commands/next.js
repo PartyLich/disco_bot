@@ -21,5 +21,8 @@ function execute(message, {serverQueue: {songs = []}, args} = {}) {
     return message.channel.send(`There's nothing else in the queue.`);
   }
 
-  return message.channel.send(getSongEmbed(songs[1], 'next'));
+  return message.channel.send(
+      'Here\'s what\'s next:',
+      getSongEmbed(songs[1], 'next')
+  );
 }
