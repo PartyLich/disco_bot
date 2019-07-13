@@ -1,5 +1,4 @@
 import ytdl from 'ytdl-core';
-import {DIALOG} from '../dialog.json';
 import {playVoiceLine} from '../playVoiceLine.js';
 import {getSongEmbed} from '../songEmbed';
 
@@ -53,8 +52,6 @@ async function execute(message, {serverQueue, args}) {
     file: songFile,
     length: lenString,
   };
-
-  const dialog = DIALOG.play;
 
   // check if music is already playing.
   if (!serverQueue) {
