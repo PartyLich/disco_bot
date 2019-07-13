@@ -51,6 +51,7 @@ async function execute(message, {serverQueue, args}) {
     url: songInfo.video_url,
     file: songFile,
     length: lenString,
+    requestor: message.member,
   };
 
   // check if music is already playing.
