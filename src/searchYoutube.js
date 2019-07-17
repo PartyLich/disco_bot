@@ -1,4 +1,5 @@
 import https from 'https';
+import {youtubeKey} from './config.json';
 
 /**
  * Search youtube filtered to the supplied category
@@ -25,6 +26,9 @@ async function searchYoutube(query, topic, apiKey, maxResults) {
     console.error(err.message);
   }
 }
+
+export const searchMusic = (query, maxResults) =>
+  searchYoutube(query, '/m/04rlf', youtubeKey, maxResults);
 
 /**
  * node.js https.get with a promise wrapper
