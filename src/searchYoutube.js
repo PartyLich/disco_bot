@@ -27,6 +27,12 @@ async function searchYoutube(query, topic, apiKey, maxResults) {
   }
 }
 
+/**
+ * Search youtube filtered to the music category
+ * @param  {!String} query      search term(s)
+ * @param  {Number} maxResults maximum number of results to return
+ * @return {Promise}
+ */
 export const searchMusic = (query, maxResults) =>
   searchYoutube(query, '/m/04rlf', youtubeKey, maxResults);
 
