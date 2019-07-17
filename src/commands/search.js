@@ -1,5 +1,6 @@
 import {RichEmbed} from 'discord.js';
 import {searchMusic} from '../searchYoutube';
+import {decodeEntities} from '../htmlEntities';
 
 const name = 'search';
 const description = 'Search youtube for a song';
@@ -47,10 +48,10 @@ async function execute(message, {serverQueue, args}) {
 function formatResult(index, title, id, selected) {
   return selected
     ? `**${('00' + index).slice(-2)}. [${decodeURIComponent(
-        title
+        decodeEntities(title)
     )}](${YOUTUBE_VID_URL + id})**`
     : `${('00' + index).slice(-2)}. [${decodeURIComponent(
-        title
+        decodeEntities(title)
     )}](${YOUTUBE_VID_URL + id})`;
 }
 
