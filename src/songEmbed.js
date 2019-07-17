@@ -1,4 +1,4 @@
-import Discord from 'discord.js';
+import {RichEmbed} from 'discord.js';
 import {DIALOG} from './dialog.json';
 import {randInt} from './randInt.js';
 
@@ -11,7 +11,7 @@ import {randInt} from './randInt.js';
 export function getSongEmbed(song, action) {
   if (!song || !action) return null;
 
-  const embed = new Discord.RichEmbed();
+  const embed = new RichEmbed();
   const info = getActionText(action);
 
   embed.setTitle(song.title);
