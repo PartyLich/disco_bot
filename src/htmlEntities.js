@@ -1,3 +1,8 @@
+/**
+ * Encode HTML entities
+ * @param  {String} str string to be encoded
+ * @return {String}     encoded string
+ */
 export function encodeEntities(str) {
   const escapeChars = {
     '¢': 'cent',
@@ -26,6 +31,12 @@ export function encodeEntities(str) {
   });
 }
 
+/**
+ * Decode HTML entities in a String
+ * https://stackoverflow.com/a/44195856/1829589
+ * @param  {String} encodedString string to decode HTML entities from
+ * @return {String}               the decoded string
+ */
 export function decodeEntities(encodedString) {
   const reTranslate = /&(nbsp|amp|quot|lt|gt);/g;
   const reNumbers = /&#(\d+);/gi;
