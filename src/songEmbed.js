@@ -19,6 +19,7 @@ export function getSongEmbed(song, action) {
   embed.addField(info.title, info.description, true);
   embed.addField('Length', song.length, true);
   embed.setTimestamp();
+  embed.setColor('GREEN');
 
   return embed;
 }

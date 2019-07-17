@@ -8,6 +8,9 @@ import {cleanMessage} from './cleanMessage.js';
 const client = new Discord.Client();
 client.login(token);
 
+// set bot constants
+client.EMBED_COLOR = 'GREEN';
+
 // import client commands
 client.commands = new Discord.Collection();
 const commandFiles = fs
