@@ -22,13 +22,13 @@
   "license": "ISC",
   "babel": {
     "presets": [
-        [
-          "@babel/preset-env",
-          {
-            "useBuiltIns": "usage"
-          }
-        ]
+      [
+        "@babel/preset-env",
+        {
+          "useBuiltIns": "usage"
+        }
       ]
+    ]
   },
   "dependencies": {
     "bufferutil": "^4.0.1",
