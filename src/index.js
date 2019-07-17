@@ -8,6 +8,9 @@ import {cleanMessage} from './cleanMessage.js';
 const client = new Discord.Client();
 client.login(token);
 
+// set bot constants
+client.EMBED_COLOR = 'GREEN';
+
 // import client commands
 client.commands = new Discord.Collection();
 const commandFiles = fs
@@ -30,6 +33,7 @@ const queue = new Map();
 // add basic listeners
 client.once('ready', () => {
   console.log('ready');
+  client.user.setActivity('some chill beats', {type: 'LISTENING'});
 });
 client.once('Reconnecting', () => {
   console.log('reconnecting...');
@@ -49,12 +53,15 @@ client.on('message', async (message) => {
   // check command to execute
   const serverQueue = queue.get(message.guild.id);
   const args = message.content.slice(prefix.length).split(/ +/);
-  const command = args.shift().toLowerCase();
+  const commandName = args.shift().toLowerCase();
+  const command =
+    client.commands.get(commandName) ||
+    client.commands.find((cmd) => cmd.alias && cmd.alias.includes(commandName));
 
-  if (client.commands.has(command)) {
+  if (command) {
     try {
       args.push(queue);
-      client.commands.get(command).execute(message, {serverQueue, args});
+      command.execute(message, {serverQueue, args});
       cleanMessage(message);
     } catch (e) {
       console.error(e);

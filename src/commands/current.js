@@ -1,28 +1,31 @@
 import {getSongEmbed} from '../songEmbed';
 
-const name = 'next';
-const description = 'Respond with the next song in the queue';
+const name = 'current';
+const description = 'Display currently playing song info';
+const alias = [
+  'dafuqisthis',
+  'songname',
+  'newsongwhodis',
+  'now',
+];
 
 export {
   name,
   description,
+  alias,
   execute,
 };
 
 /**
- * Respond with the next song in the queue
+ * Display currently playing song info
  * @param  {Message}   message     The Discord message we're responding to
  * @param  {Object}   serverQueue the contract for our song queue
  * @return {Promise}             Promise for the bot's reply message
  */
 function execute(message, {serverQueue: {songs = []}, args} = {}) {
-  // function execute(message, {songs = []} = {}) {
-  if (songs.length < 2) {
-    return message.channel.send(`There's nothing else in the queue.`);
+  if (songs.length < 1) {
+    return message.channel.send(`There's nothing in the queue.`);
   }
 
-  return message.channel.send(
-      'Here\'s what\'s next:',
-      getSongEmbed(songs[1], 'next')
-  );
+  return message.channel.send(getSongEmbed(songs[0], 'now'));
 }

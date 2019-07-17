@@ -1,10 +1,11 @@
 import ytdl from 'ytdl-core';
-import {DIALOG} from '../dialog.json';
-import {randInt} from '../randInt.js';
 import {playVoiceLine} from '../playVoiceLine.js';
+import {getSongEmbed} from '../songEmbed';
 
 const name = 'play';
 const description = 'Play the requested song';
+const playActivity = 'those sicc beats';
+const idleActivity = 'some funky jams';
 
 export {
   name,
@@ -40,14 +41,18 @@ async function execute(message, {serverQueue, args}) {
   // use ytdl library to get the song information from the youtube link
   const songInfo = await ytdl.getInfo(args[0]);
   const songFile = '';
+  const lenSeconds = ('00' + (songInfo.length_seconds % 60)).slice(-2);
+  const lenMinutes = ('00' + Math.floor(songInfo.length_seconds / 60))
+      .slice(-2);
+  const lenString = `${lenMinutes}:${lenSeconds}`;
 
   const song = {
     title: songInfo.title,
     url: songInfo.video_url,
     file: songFile,
+    length: lenString,
+    requestor: message.member,
   };
-
-  const dialog = DIALOG.play;
 
   // check if music is already playing.
   if (!serverQueue) {
@@ -74,14 +79,17 @@ async function execute(message, {serverQueue, args}) {
       // Start a song
       play(message, {serverQueue, args: [serverQueue.songs[0], queue]});
 
+      // Update bot activity
+      message.client.user.setActivity(playActivity);
+
       return message.channel.send(
-          `${dialog[randInt(dialog.length - 1)]}` +
-          `\n${song.title} has been added to the queue!`
+          getSongEmbed(song, 'queue')
       );
     } catch (err) {
       // Print error message if the bot fails to join the voicechat
       console.error(err);
       queue.delete(message.guild.id);
+      message.client.user.setActivity(idleActivity, {type: 'LISTENING'});
       return message.channel.send(err);
     }
   } else {
@@ -90,8 +98,7 @@ async function execute(message, {serverQueue, args}) {
     console.log(serverQueue.songs);
 
     return message.channel.send(
-        `${dialog[randInt(dialog.length - 1)]}` +
-        `\n${song.title} has been added to the queue!`
+        getSongEmbed(song, 'queue')
     );
   }
 }
@@ -110,6 +117,7 @@ async function play(message, {serverQueue, args: [song, ...args]} = {}) {
     await playVoiceLine(serverQueue, 'stop');
 
     serverQueue.voiceChannel.leave();
+    message.client.user.setActivity(idleActivity, {type: 'LISTENING'});
     queue.delete(message.guild.id);
     return false;
   }

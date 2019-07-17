@@ -58,9 +58,11 @@ function execute(message, {serverQueue, args} = {}) {
   } else {
     const response = serverQueue.volume > volume ? volDown : volUp;
     serverQueue.volume = volume;
-    serverQueue.connection.dispatcher.setVolumeLogarithmic(
-        serverQueue.volume / 5
-    );
+    if (serverQueue.connection != null) {
+      serverQueue.connection.dispatcher.setVolumeLogarithmic(
+          serverQueue.volume / 5
+      );
+    }
 
     return message.channel.send(`${response}`);
   }
