@@ -103,6 +103,13 @@ function getEmbed(color, resultList) {
   return embed;
 }
 
+/**
+ * Decrement the selected song index
+ * @param  {Message} message The Discord message we're responding to
+ * @param  {Object} results youtube search API results object
+ * @param {Number}  selection index of current user selection
+ * @return {Number}         new selected song index
+ */
 function navUp({message, results, selection}) {
   if (selection >= 0) {
     selection--;
@@ -113,6 +120,13 @@ function navUp({message, results, selection}) {
   return selection;
 }
 
+/**
+ * Increment the selected song index
+ * @param  {Message} message The Discord message we're responding to
+ * @param  {Object} results youtube search API results object
+ * @param {Number}  selection index of current user selection
+ * @return {Number}         new selected song index
+ */
 function navDown({message, results, selection}) {
   if (selection < MAX_RESULTS - 1) {
     selection++;
@@ -123,11 +137,25 @@ function navDown({message, results, selection}) {
   return selection;
 }
 
+/**
+ * Respond to user song selection
+ * @param  {Message} message     The Discord message we're responding to
+ * @param  {ReactionCollector} collector   reaction collector that spawned this
+ * @param {Number}  selection index of current user selection
+ *  action
+ */
 function accept({message, collector, selection}) {
   message.channel.send(`Queuing it up: ${selection + 1}`);
   collector.stop('Song selected by user');
 }
 
+/**
+ * Collect user input and dispatch actions
+ * @param  {Message} response the bot's response message
+ * @param  {Message} message  the originating message
+ * @param  {Object} results youtube search API results object
+ * @return {Promise}
+ */
 function collectResponse(response, message, results) {
   return new Promise((resolve, reject) => {
     const nav = [NAV_UP, NAV_DOWN];
