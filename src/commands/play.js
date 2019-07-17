@@ -38,6 +38,7 @@ async function execute(message, {serverQueue, args}) {
     );
   }
 
+  console.log(`${name} command execute, args:${args}`);
   // use ytdl library to get the song information from the youtube link
   const songInfo = await ytdl.getInfo(args[0]);
   const songFile = '';
