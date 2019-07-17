@@ -1,5 +1,13 @@
 import https from 'https';
 
+/**
+ * Search youtube filtered to the supplied category
+ * @param  {!String} query      search term(s)
+ * @param  {!String} topic      topic (category) to filter results
+ * @param  {!String} apiKey     google API key to use
+ * @param  {Number} maxResults maximum number of results to return
+ * @return {Object}            response object
+ */
 async function searchYoutube(query, topic, apiKey, maxResults) {
   const baseUrl = 'https://www.googleapis.com/youtube/v3/search?part=snippet';
   const type = '&type=video';
