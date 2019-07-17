@@ -1,6 +1,6 @@
 {
   "name": "disco_bot",
-  "version": "0.5.0",
+  "version": "0.9.0",
   "description": "Discord music bot featuring Lucio",
   "main": "index.js",
   "scripts": {
