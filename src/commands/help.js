@@ -29,7 +29,7 @@ function execute(message) {
     if (command.secret) continue;
 
     commandList.push(`${prefix + command.name} ${command.description}`);
-    if (command.alias) commandList.push(`  Aliases: ${command.alias}`);
+    if (command.alias) commandList.push(`  Aliases: ${command.alias.join(', ')}`);
     if (command.usage) commandList.push(`  Usage: ${prefix + command.usage}`);
   }
 
