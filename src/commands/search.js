@@ -15,6 +15,9 @@ export {
 
 const YOUTUBE_VID_URL = 'https://www.youtube.com/watch?v=';
 const MAX_RESULTS = 5;
+const NAV_UP = '🔼';
+const NAV_DOWN = '🔽';
+const ACCEPT = '🎵';
 
 /**
  * Search youtube for a song
@@ -34,7 +37,17 @@ async function execute(message, {serverQueue, args}) {
   const resultList = getResultList(results, 0);
 
   message
-      .reply(getEmbed(message.client.EMBED_COLOR, resultList));
+      .reply(getEmbed(message.client.EMBED_COLOR, resultList))
+      .then((response) => {
+        collectResponse(response, message, results)
+            .then((result) => {
+              const {name: commandName} = require('./play');
+              const command = message.client.commands.get(commandName);
+              const playArgs = [result, args[args.length - 1]];
+              command.execute(message, {serverQueue, args: playArgs});
+            })
+            .catch((err) => console.error(err));
+      });
 }
 
 /**
@@ -88,4 +101,82 @@ function getEmbed(color, resultList) {
   embed.setColor(color);
 
   return embed;
+}
+
+function navUp({message, results, selection}) {
+  if (selection >= 0) {
+    selection--;
+    message.edit(
+        getEmbed(message.client.EMBED_COLOR, getResultList(results, selection))
+    );
+  }
+  return selection;
+}
+
+function navDown({message, results, selection}) {
+  if (selection < MAX_RESULTS - 1) {
+    selection++;
+    message.edit(
+        getEmbed(message.client.EMBED_COLOR, getResultList(results, selection))
+    );
+  }
+  return selection;
+}
+
+function accept({message, collector, selection}) {
+  message.channel.send(`Queuing it up: ${selection + 1}`);
+  collector.stop('Song selected by user');
+}
+
+function collectResponse(response, message, results) {
+  return new Promise((resolve, reject) => {
+    const nav = [NAV_UP, NAV_DOWN];
+    const commands = new Map([
+      [NAV_UP, navUp],
+      [NAV_DOWN, navDown],
+      [ACCEPT, accept],
+    ]);
+    let selection = 0;
+
+    // Prompt user with input options
+    response
+        .react(NAV_UP)
+        .then(() => response.react(NAV_DOWN))
+        .then(() => response.react(ACCEPT))
+        .catch((err) => {
+          console.error(err);
+          reject(err);
+        });
+
+    const filter = (reaction, user) =>
+      user.id === message.author.id &&
+      (nav.includes(reaction.emoji.name) || reaction.emoji.name === ACCEPT);
+    const collectorOptions = {
+      // time: 15000,
+    };
+    const collector = response.createReactionCollector(
+        filter,
+        collectorOptions
+    );
+
+    collector.on('collect', (reaction, reactionCollector) => {
+      console.log(`Collected ${reaction.emoji.name}, `);
+      if (commands.has(reaction.emoji.name)) {
+        reaction.remove(message.author);
+        selection = commands.get(reaction.emoji.name)({
+          message: response,
+          selection,
+          results,
+          collector: reactionCollector,
+          reaction,
+        });
+      }
+    });
+
+    collector.on('end', (collected) => {
+      console.log(`Collected ${collected.size} items`);
+      const result = YOUTUBE_VID_URL + results.items[selection].id.videoId;
+      resolve(result);
+    });
+  });
 }
