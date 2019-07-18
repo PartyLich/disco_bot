@@ -146,7 +146,7 @@ function navDown({message, results, selection}) {
  */
 function accept({message, collector, selection}) {
   message.channel.send(`Queuing it up: ${selection + 1}`);
-  collector.stop('Song selected by user');
+  collector.stop(ACCEPT);
 }
 
 /**
@@ -201,7 +201,7 @@ function collectResponse(response, message, results) {
       }
     });
 
-    collector.on('end', (collected) => {
+    collector.on('end', (collected, reason) => {
       console.log(`Collected ${collected.size} items`);
       const result = YOUTUBE_VID_URL + results.items[selection].id.videoId;
       resolve(result);
