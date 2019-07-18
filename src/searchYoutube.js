@@ -43,7 +43,7 @@ export const searchMusic = (query, maxResults) =>
  */
 function fetch(url) {
   return new Promise((resolve, reject) => {
-    https.get(encodeURI(url), (response) => {
+    https.get(url, (response) => {
       let data = '';
 
       // A chunk of data has been recieved
