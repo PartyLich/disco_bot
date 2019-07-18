@@ -11,6 +11,8 @@ export default function Song(songInfo, requestor) {
       -2
   );
   const lenString = `${lenMinutes}:${lenSeconds}`;
+  const thumbnail = getThumbnail(songInfo);
+  console.log(`song thumbnail: ${thumbnail}`);
 
   return {
     title: songInfo.title,
@@ -18,5 +20,13 @@ export default function Song(songInfo, requestor) {
     file: songFile,
     length: lenString,
     requestor,
+    thumbnail,
   };
+}
+
+function getThumbnail(songInfo) {
+  const {thumbnails} = songInfo.player_response.videoDetails.thumbnail;
+  const {url: thumbnail} = thumbnails[thumbnails.length - 1];
+
+  return thumbnail;
 }
