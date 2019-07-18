@@ -1,6 +1,7 @@
 import {RichEmbed} from 'discord.js';
 import {searchMusic} from '../searchYoutube';
 import {decodeEntities} from '../htmlEntities';
+import {cleanMessage} from '../cleanMessage';
 
 const name = 'search';
 const description = 'Search youtube for a song';
@@ -231,7 +232,7 @@ function collectResponse(response, message, results) {
         const result = YOUTUBE_VID_URL + results.items[selection].id.videoId;
         resolve(result);
       } else {
-        response.delete();
+        cleanMessage(response);
         reject(new Error('Search canceled by user'));
       }
     });
