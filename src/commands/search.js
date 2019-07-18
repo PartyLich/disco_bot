@@ -18,6 +18,7 @@ const MAX_RESULTS = 5;
 const NAV_UP = '🔼';
 const NAV_DOWN = '🔽';
 const ACCEPT = '🎵';
+const CANCEL = '❌';
 
 /**
  * Search youtube for a song
@@ -153,6 +154,11 @@ function accept({message, collector, selection}) {
   collector.stop(ACCEPT);
 }
 
+function cancel({message, collector}) {
+  message.channel.send(`Changed your mind?`);
+  collector.stop(CANCEL);
+}
+
 /**
  * Collect user input and dispatch actions
  * @param  {Message} response the bot's response message
@@ -166,11 +172,13 @@ function collectResponse(response, message, results) {
       NAV_UP,
       NAV_DOWN,
       ACCEPT,
+      CANCEL,
     ];
     const commands = new Map([
       [NAV_UP, navUp],
       [NAV_DOWN, navDown],
       [ACCEPT, accept],
+      [CANCEL, cancel],
     ]);
     let selection = 0;
 
@@ -179,6 +187,7 @@ function collectResponse(response, message, results) {
         .react(NAV_UP)
         .then(() => response.react(NAV_DOWN))
         .then(() => response.react(ACCEPT))
+        .then(() => response.react(CANCEL))
         .catch((err) => {
           console.error(err);
           reject(err);
@@ -210,8 +219,13 @@ function collectResponse(response, message, results) {
 
     collector.on('end', (collected, reason) => {
       console.log(`Collected ${collected.size} items`);
-      const result = YOUTUBE_VID_URL + results.items[selection].id.videoId;
-      resolve(result);
+      if (reason === ACCEPT) {
+        const result = YOUTUBE_VID_URL + results.items[selection].id.videoId;
+        resolve(result);
+      } else {
+        response.delete();
+        reject(new Error('Search canceled by user'));
+      }
     });
   });
 }
