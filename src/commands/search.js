@@ -158,7 +158,11 @@ function accept({message, collector, selection}) {
  */
 function collectResponse(response, message, results) {
   return new Promise((resolve, reject) => {
-    const nav = [NAV_UP, NAV_DOWN];
+    const nav = [
+      NAV_UP,
+      NAV_DOWN,
+      ACCEPT,
+    ];
     const commands = new Map([
       [NAV_UP, navUp],
       [NAV_DOWN, navDown],
@@ -177,8 +181,7 @@ function collectResponse(response, message, results) {
         });
 
     const filter = (reaction, user) =>
-      user.id === message.author.id &&
-      (nav.includes(reaction.emoji.name) || reaction.emoji.name === ACCEPT);
+      user.id === message.author.id && nav.includes(reaction.emoji.name);
     const collectorOptions = {
       // time: 15000,
     };
