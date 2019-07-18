@@ -144,16 +144,24 @@ function navDown({message, results, selection}) {
 
 /**
  * Respond to user song selection
- * @param  {Message} message     The Discord message we're responding to
- * @param  {ReactionCollector} collector   reaction collector that spawned this
- * @param {Number}  selection index of current user selection
- *  action
+ * @param {Object} args
+ * @param  {Message} args.message     The Discord message we're responding to
+ * @param  {ReactionCollector} args.collector  reaction collector that spawned
+ *    this action
+ * @param {Number}  args.selection index of current user selection
  */
 function accept({message, collector, selection}) {
   message.channel.send(`Queuing it up: ${selection + 1}`);
   collector.stop(ACCEPT);
 }
 
+/**
+* Stop the current search process
+* @param {Object} args
+* @param  {Message} args.message     The Discord message we're responding to
+* @param  {ReactionCollector} args.collector  reaction collector that spawned
+*    this action
+*/
 function cancel({message, collector}) {
   message.channel.send(`Changed your mind?`);
   collector.stop(CANCEL);
