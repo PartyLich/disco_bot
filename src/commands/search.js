@@ -204,7 +204,7 @@ function collectResponse(response, message, results) {
     const filter = (reaction, user) =>
       user.id === message.author.id && nav.includes(reaction.emoji.name);
     const collectorOptions = {
-      // time: 15000,
+      time: 90 * 1000,
     };
     const collector = response.createReactionCollector(
         filter,
