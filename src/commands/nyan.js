@@ -12,6 +12,12 @@ export {
   secret,
 };
 
+/**
+ * Play some sweet sweet nyan cat
+ * @param  {Message} message     The Discord message we're responding to
+ * @param  {Object} serverQueue  the contract for our song queue
+ * @return {Promise}             Promise for the bot's reply message
+ */
 async function execute(message, {serverQueue, args = []}) {
   const nyanUrl = 'https://youtu.be/4UdhuYsU0dM';
   const voiceChannel = message.member.voiceChannel;
