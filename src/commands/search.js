@@ -52,6 +52,7 @@ async function execute(message, {serverQueue, args}) {
       });
 }
 
+
 /**
  * Return a formatted string for a search result
  * @param  {Number} index index of the result
@@ -69,6 +70,7 @@ function formatResult(index, title, id, selected) {
         decodeEntities(title)
     )}](${YOUTUBE_VID_URL + id})`;
 }
+
 
 /**
  * Parse youtube search results into array of data we actually need
@@ -88,6 +90,7 @@ function getResultList(results, selection) {
 
   return resultList;
 }
+
 
 /**
  * Returns a `Discord.RichEmbed` for the given resultList array
@@ -109,6 +112,7 @@ function getEmbed(color, resultList) {
   return embed;
 }
 
+
 /**
  * Decrement the selected song index
  * @param  {Message} message The Discord message we're responding to
@@ -125,6 +129,7 @@ function navUp({message, results, selection}) {
   }
   return selection;
 }
+
 
 /**
  * Increment the selected song index
@@ -143,6 +148,7 @@ function navDown({message, results, selection}) {
   return selection;
 }
 
+
 /**
  * Respond to user song selection
  * @param {Object} args
@@ -156,6 +162,7 @@ function accept({message, collector, selection}) {
   collector.stop(ACCEPT);
 }
 
+
 /**
 * Stop the current search process
 * @param {Object} args
@@ -167,6 +174,7 @@ function cancel({message, collector}) {
   message.channel.send(`Changed your mind?`);
   collector.stop(CANCEL);
 }
+
 
 /**
  * Collect user input and dispatch actions
