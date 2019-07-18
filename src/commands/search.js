@@ -236,5 +236,25 @@ function collectResponse(response, message, results) {
         reject(new Error('Search canceled by user'));
       }
     });
+
+    const reNumMatch = new RegExp(`\s?([1-${MAX_RESULTS}])[^\d]?\s?`);
+    const txtFilter = (_message) =>
+      _message.author.id === message.author.id &&
+      reNumMatch.test(_message.content);
+    const txtCollector = response.channel.createCollector(txtFilter, {
+      maxMatches: 1,
+      ...collectorOptions,
+    });
+
+    // Respond to user text input
+    txtCollector.on('collect', (message) => {
+      selection = parseInt(message.content.match(reNumMatch)[1]) - 1;
+      cleanMessage(message);
+      console.log(`txtCollector set selection to ${selection}`);
+    });
+
+    txtCollector.on('end', (/* collected, reason */) => {
+      collector.stop(ACCEPT);
+    });
   });
 }
