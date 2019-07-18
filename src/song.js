@@ -1,3 +1,9 @@
+/**
+ * Generate Song object from ytdl songInfo
+ * @param {Object} songInfo ytdl songInfo
+ * @param {GuildMember} requestor user that requested the song
+ * @constructor
+ */
 export default function Song(songInfo, requestor) {
   const songFile = '';
   const lenSeconds = ('00' + (songInfo.length_seconds % 60)).slice(-2);
