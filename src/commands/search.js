@@ -96,9 +96,13 @@ function getResultList(results, selection) {
 function getEmbed(color, resultList) {
   const embed = new RichEmbed().setTitle('Search Results');
 
-  embed.addField('Results', resultList.join('\n'), false);
   embed.setTimestamp();
   embed.setColor(color);
+  if (!resultList.length) {
+    return embed.addField('Results', 'No results ', false);
+  } else {
+    embed.addField('Results', resultList.join('\n') + ' ', false);
+  }
 
   return embed;
 }
