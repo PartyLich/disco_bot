@@ -24,6 +24,11 @@ export default function Song(songInfo, requestor) {
   };
 }
 
+/**
+ * Get thumbnail url from the ytdl songInfo
+ * @param {Object} songInfo ytdl songInfo
+ * @return {String} thumbnail url
+ */
 function getThumbnail(songInfo) {
   const {thumbnails} = songInfo.player_response.videoDetails.thumbnail;
   const {url: thumbnail} = thumbnails[thumbnails.length - 1];
