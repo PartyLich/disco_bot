@@ -15,8 +15,7 @@ export {
  * @param  {Object}   serverQueue the contract for our song queue
  * @return {Promise}             Promise for the bot's reply message
  */
-function execute(message, {serverQueue: {songs = []}, args} = {}) {
-  // function execute(message, {songs = []} = {}) {
+function execute(message, {serverQueue: {songs = []} = {}, args} = {}) {
   if (songs.length < 2) {
     return message.channel.send(`There's nothing else in the queue.`);
   }
