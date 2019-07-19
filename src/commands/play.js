@@ -158,6 +158,7 @@ async function play(message, {serverQueue, args: [song, ...args]} = {}) {
    * @param  {String} e error that was thrown/raised
    */
   function onError(e) {
+    message.channel.send('An error occurred during stream.');
     console.error(e);
   }
 }
