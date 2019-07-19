@@ -1,4 +1,5 @@
 import Discord from 'discord.js';
+import send from '../sendText';
 
 const name = 'playlist';
 const description = 'Display the upcoming songs in the queue';
@@ -17,7 +18,7 @@ export {
  * @param  {Object} serverQueue the contract for our song queue
  * @return {Promise}             Promise for the bot's reply message
  */
-function execute(message, {serverQueue: {songs = []}, args} = {}) {
+function execute({channel}, {serverQueue: {songs = []}, args} = {}) {
   const embed = new Discord.RichEmbed().setTitle('Upcoming songs');
   const list = [];
 
@@ -35,5 +36,5 @@ function execute(message, {serverQueue: {songs = []}, args} = {}) {
   embed.setDescription(list.join('\n'));
   embed.setTimestamp();
 
-  return message.channel.send(embed);
+  return send(channel, embed);
 }
