@@ -19,6 +19,7 @@ export default function Song(songInfo, requestor) {
     url: songInfo.video_url,
     file: songFile,
     length: lenString,
+    lengthSeconds: songInfo.length_seconds,
     requestor,
     thumbnail,
   };

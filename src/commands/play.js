@@ -119,22 +119,36 @@ async function play(message, {serverQueue, args: [song, ...args]} = {}) {
   // Play a voice line
   await playVoiceLine(serverQueue, 'play');
   let dispatcher;
+  let starttime = 0;
 
   if (song.file === '') {
     dispatcher = serverQueue.connection.playStream(songStream, streamOptions);
-    dispatcher.on('end', onEnd).on('error', onError);
+    dispatcher
+        .on('end', onEnd)
+        .on('error', onError)
+        .on('start', onStart);
   } else {
     dispatcher = serverQueue.connection.playFile(song.file);
-    dispatcher.on('end', onEnd).on('error', onError);
+    dispatcher
+        .on('end', onEnd)
+        .on('error', onError)
+        .on('start', onStart);
   }
 
   dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
+
+  function onStart() {
+    starttime = Date.now();
+    console.log(`Playback started: ${song.title}`);
+  }
 
   /**
    * Play the next song and remove completed song from queue
    */
   function onEnd() {
     console.log(`Playback ended: ${song.title}`);
+    console.log(`Stored length: ${song.lengthSeconds} Time elapsed: ${
+      (Date.now() - starttime) / 1000}`);
     serverQueue.songs.shift();
     play(message, {serverQueue, args: [serverQueue.songs[0], queue]});
   }
