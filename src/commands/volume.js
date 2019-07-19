@@ -27,7 +27,6 @@ function execute(message, {serverQueue, args} = {}) {
   const dialogDown = DIALOG.volumeDown;
   const uppers = new Set(['up', 'louder']);
   const downers = new Set(['down', 'quieter']);
-  // const args = message.content.split(' ');
   const volume = parseInt(args[0]);
   const volUp = `${dialogUp[randInt(dialogUp.length - 1)]} (volume up)`;
   const volDown = `${dialogDown[randInt(dialogDown.length - 1)]} (volume down)`;
