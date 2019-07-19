@@ -1,4 +1,4 @@
-import Discord from 'discord.js';
+import {RichEmbed} from 'discord.js';
 import send from '../sendText';
 
 const name = 'playlist';
@@ -19,7 +19,7 @@ export {
  * @return {Promise}             Promise for the bot's reply message
  */
 function execute({channel}, {serverQueue: {songs = []}, args} = {}) {
-  const embed = new Discord.RichEmbed().setTitle('Upcoming songs');
+  const embed = new RichEmbed().setTitle('Upcoming songs');
   const list = [];
 
   for (let i = 0, len = songs.length; i < len && i < 5; i++) {
