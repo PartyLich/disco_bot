@@ -14,7 +14,6 @@ export {name, description, execute};
  * @return {Promise}             Promise for the bot's reply message
  */
 function execute(message, {serverQueue, args} = {}) {
-  // function stop(message, serverQueue) {
   if (!message.member.voiceChannel) {
     return message.channel.send(
         'You have to be in a voice channel to stop the music!'
