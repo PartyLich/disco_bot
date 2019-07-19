@@ -1,5 +1,6 @@
 import {DIALOG} from '../dialog.json';
 import {randInt} from '../randInt.js';
+import send from '../sendText';
 
 const name = 'vol';
 const description = 'Adjust the stream volume';
