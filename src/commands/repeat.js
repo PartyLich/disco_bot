@@ -1,5 +1,5 @@
 import {DIALOG} from '../dialog.json';
-import {randInt} from '../randInt.js';
+import getRandomDialog from '../getRandomDialog';
 import send from '../sendText';
 
 const name = 'repeat';
@@ -27,12 +27,12 @@ function execute(message, {serverQueue, args} = {}) {
     return;
   }
 
-  const dialog = DIALOG.repeat;
+  const dialog = () => getRandomDialog(DIALOG.repeat);
   const song = serverQueue.songs[0];
 
   serverQueue.songs.unshift(song);
   return send(channel,
-      `${dialog[randInt(dialog.length - 1)]} repeating ${song.title} for ${
+      `${dialog()} repeating ${song.title} for ${
         message.author.username
       }`
   );
