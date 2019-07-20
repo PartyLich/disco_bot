@@ -1,6 +1,6 @@
 import {DIALOG} from '../dialog.json';
-import {randInt} from '../randInt.js';
 import send from '../sendText';
+import getRandomDialog from '../getRandomDialog';
 
 const name = 'vol';
 const description = 'Adjust the stream volume';
@@ -25,13 +25,13 @@ function execute(message, {serverQueue, args} = {}) {
     );
   }
 
-  const dialogUp = DIALOG.volumeUp;
-  const dialogDown = DIALOG.volumeDown;
+  const dialogUp = () => getRandomDialog(DIALOG.volumeUp);
+  const dialogDown = () => getRandomDialog(DIALOG.volumeDown);
   const uppers = new Set(['up', 'louder']);
   const downers = new Set(['down', 'quieter']);
   const volume = parseInt(args[0]);
-  const volUp = `${dialogUp[randInt(dialogUp.length - 1)]} (volume up)`;
-  const volDown = `${dialogDown[randInt(dialogDown.length - 1)]} (volume down)`;
+  const volUp = `${dialogUp()} (volume up)`;
+  const volDown = `${dialogDown()} (volume down)`;
 
   if (isNaN(volume)) {
     if (uppers.has(args[0])) {
