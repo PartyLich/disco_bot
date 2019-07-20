@@ -1,5 +1,5 @@
 import {DIALOG} from '../dialog.json';
-import {randInt} from '../randInt.js';
+import getRandomDialog from '../getRandomDialog';
 import send from '../sendText';
 
 const name = 'stop';
@@ -22,17 +22,17 @@ function execute(message, {serverQueue, args} = {}) {
     );
   }
   if (!serverQueue) {
-    const dialog = DIALOG.stopNoQueue;
+    const dialog = () => getRandomDialog(DIALOG.stopNoQueue);
     return send(channel,
-        `${dialog[randInt(dialog.length - 1)]} (There is no song to stop)`
+        `${dialog()} (There is no song to stop)`
     );
   }
 
-  const dialog = DIALOG.stop;
+  const dialog = () => getRandomDialog(DIALOG.stop);
   serverQueue.songs = [];
   serverQueue.connection.dispatcher.end();
 
   return send(channel,
-      `${dialog[randInt(dialog.length - 1)]} (playback stopped)`
+      `${dialog()} (playback stopped)`
   );
 }

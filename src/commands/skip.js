@@ -1,5 +1,5 @@
 import {DIALOG} from '../dialog.json';
-import {randInt} from '../randInt.js';
+import getRandomDialog from '../getRandomDialog';
 import send from '../sendText';
 
 const name = 'skip';
@@ -18,7 +18,7 @@ export {
  * @return {Promise}             Promise for the bot's reply message
  */
 function execute(message, {serverQueue, args} = {}) {
-  const dialog = DIALOG.skip;
+  const dialog = () => getRandomDialog(DIALOG.skip);
   const {channel} = message;
 
   if (!message.member.voiceChannel) {
@@ -33,6 +33,6 @@ function execute(message, {serverQueue, args} = {}) {
 
   serverQueue.connection.dispatcher.end();
   send(channel,
-      `${dialog[randInt(dialog.length - 1)]} (skipping to the next song)`
+      `${dialog()} (skipping to the next song)`
   );
 }
