@@ -36,7 +36,7 @@ async function execute(message, {serverQueue, args}) {
   // check if the bot has the right permissions
   const permissions = voiceChannel.permissionsFor(message.client.user);
   if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
-    return send(textChannel, 
+    return send(textChannel,
         'I need the permissions to join and speak in your voice channel!'
     );
   }
