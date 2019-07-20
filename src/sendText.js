@@ -2,8 +2,8 @@ export default send;
 
 /**
  * Send content to a text channel
- * @param channel Channel to receive content
- * @param content  Content to send
+ * @param {TextChannel} channel Channel to receive content
+ * @param {Object|String} content  Content to send
  * @return {Promise}
  */
 function send(channel, content) {
