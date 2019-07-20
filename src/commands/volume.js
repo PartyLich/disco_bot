@@ -1,5 +1,6 @@
 import {DIALOG} from '../dialog.json';
 import {randInt} from '../randInt.js';
+import send from '../sendText';
 
 const name = 'vol';
 const description = 'Adjust the stream volume';
@@ -17,8 +18,9 @@ export {
  * @return {Promise}             Promise for the bot's reply message
  */
 function execute(message, {serverQueue, args} = {}) {
+  const {channel} = message;
   if (!serverQueue) {
-    return message.channel.send(
+    return send(channel,
         `There is only silence ${message.author.username}.`
     );
   }
@@ -27,7 +29,6 @@ function execute(message, {serverQueue, args} = {}) {
   const dialogDown = DIALOG.volumeDown;
   const uppers = new Set(['up', 'louder']);
   const downers = new Set(['down', 'quieter']);
-  // const args = message.content.split(' ');
   const volume = parseInt(args[0]);
   const volUp = `${dialogUp[randInt(dialogUp.length - 1)]} (volume up)`;
   const volDown = `${dialogDown[randInt(dialogDown.length - 1)]} (volume down)`;
@@ -38,21 +39,21 @@ function execute(message, {serverQueue, args} = {}) {
       serverQueue.connection.dispatcher.setVolumeLogarithmic(
           serverQueue.volume / 5
       );
-      return message.channel.send(volUp);
+      return send(channel, volUp);
     } else if (downers.has(args[0])) {
       serverQueue.volume = Math.max(0, serverQueue.volume - 1);
       serverQueue.connection.dispatcher.setVolumeLogarithmic(
           serverQueue.volume / 5
       );
-      return message.channel.send(volDown);
+      return send(channel, volDown);
     }
-    return message.channel.send(
+    return send(channel,
         `Sorry ${message.author.username}, ${args[0]} isn't a volume I understand`
     );
   }
 
   if (volume > 5 || volume < 0) {
-    return message.channel.send(
+    return send(channel,
         `Sorry ${message.author.username}, ${args[1]} must be between 0 and 5 inclusive.`
     );
   } else {
@@ -64,6 +65,6 @@ function execute(message, {serverQueue, args} = {}) {
       );
     }
 
-    return message.channel.send(`${response}`);
+    return send(channel, `${response}`);
   }
 }

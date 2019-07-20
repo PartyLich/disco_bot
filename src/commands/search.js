@@ -2,6 +2,7 @@ import {RichEmbed} from 'discord.js';
 import {searchMusic} from '../searchYoutube';
 import {decodeEntities} from '../htmlEntities';
 import {cleanMessage} from '../cleanMessage';
+import send from '../sendText';
 
 const name = 'search';
 const description = 'Search youtube for a song';
@@ -28,9 +29,10 @@ const CANCEL = '❌';
  * @return {Promise}             Promise for the bot's reply message
  */
 async function execute(message, {serverQueue, args}) {
+  const {channel} = message;
   if (args.length <= 1) {
     // no search term provided
-    return message.channel.send('No search term provided');
+    return send(channel, 'No search term provided');
   }
   console.log(`${name} command execute, args:${args}`);
 

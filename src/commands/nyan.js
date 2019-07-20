@@ -1,5 +1,6 @@
 import ytdl from 'ytdl-core';
 import Song from '../song';
+import send from '../sendText';
 
 const name = 'nyan';
 const description = 'Play some sweet sweet nyan cat';
@@ -21,6 +22,7 @@ export {
 async function execute(message, {serverQueue, args = []}) {
   const nyanUrl = 'https://youtu.be/4UdhuYsU0dM';
   const voiceChannel = message.member.voiceChannel;
+  const textChannel = message.channel;
 
   // check if user is in voice channel
   if (!voiceChannel) {
@@ -42,6 +44,6 @@ async function execute(message, {serverQueue, args = []}) {
     serverQueue.songs.splice(1, 0, song);
     console.log(serverQueue.songs);
 
-    return message.channel.send(getSongEmbed(song, 'queue'));
+    return send(channel, getSongEmbed(song, 'queue'));
   }
 }

@@ -1,5 +1,6 @@
 import {DIALOG} from '../dialog.json';
 import {randInt} from '../randInt.js';
+import send from '../sendText';
 
 const name = 'stop';
 const description = 'End playback of current song and clear queue';
@@ -14,15 +15,15 @@ export {name, description, execute};
  * @return {Promise}             Promise for the bot's reply message
  */
 function execute(message, {serverQueue, args} = {}) {
-  // function stop(message, serverQueue) {
+  const {channel} = message;
   if (!message.member.voiceChannel) {
-    return message.channel.send(
+    return send(channel,
         'You have to be in a voice channel to stop the music!'
     );
   }
   if (!serverQueue) {
     const dialog = DIALOG.stopNoQueue;
-    return message.channel.send(
+    return send(channel,
         `${dialog[randInt(dialog.length - 1)]} (There is no song to stop)`
     );
   }
@@ -31,7 +32,7 @@ function execute(message, {serverQueue, args} = {}) {
   serverQueue.songs = [];
   serverQueue.connection.dispatcher.end();
 
-  return message.channel.send(
+  return send(channel,
       `${dialog[randInt(dialog.length - 1)]} (playback stopped)`
   );
 }
