@@ -22,7 +22,7 @@ function execute({channel}, {serverQueue: {songs = []} = {}, args} = {}) {
   }
 
   return send(channel,
-      'Here\'s what\'s next:' +
+      // 'Here\'s what\'s next:' +
       getSongEmbed(songs[1], 'next')
   );
 }
