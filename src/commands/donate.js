@@ -14,6 +14,12 @@ export {
   secret,
 };
 
+/**
+ * Display donation information
+ * @param  {Message} message     The Discord message we're responding to
+ * @param  {Object} serverQueue the contract for our song queue
+ * @return {Promise}             Promise for the bot's reply message
+ */
 function execute(message) {
   const embed = new Discord.RichEmbed().setTitle('Supporting Lucio:');
 
