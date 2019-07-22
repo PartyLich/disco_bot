@@ -112,7 +112,7 @@ async function play(message, {serverQueue, args: [song, ...args]} = {}) {
 
   // start playback using the playStream() function and the URL of our song.
   const opts = {filter: 'audioonly'};
-  const streamOptions = {seek: 0, volume: 1};
+  const streamOptions = {seek: 0, volume: 1, passes: 3};
   const songStream = ytdl(song.url, opts);
   // Play a voice line
   await playVoiceLine(serverQueue, 'play');
