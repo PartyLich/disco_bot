@@ -137,6 +137,12 @@ async function play(message, {serverQueue, args: [song, ...args]} = {}) {
 
   function onStart() {
     starttime = Date.now();
+    const notice = song.lengthSeconds * 1000 * 0.95;
+    song.timeout = setTimeout(() => {
+      const {name: commandName} = require('./next');
+      const command = message.client.commands.get(commandName);
+      command.execute(message, {serverQueue, args: []});
+    }, notice);
     console.log(`Playback started: ${song.title}`);
   }
 
