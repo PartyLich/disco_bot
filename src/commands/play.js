@@ -135,6 +135,10 @@ async function play(message, {serverQueue, args: [song, ...args]} = {}) {
 
   dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
 
+  /**
+   * Create timeout to display next song in the queue when the current song is
+   *  nearing completion.
+   */
   function onStart() {
     starttime = Date.now();
     const notice = song.lengthSeconds * 1000 * 0.95;
