@@ -12,6 +12,35 @@ export {
 };
 
 /**
+ * mutate serverQueue object to change audio volume according to volumeFunction
+ * return value
+ * @param  {Object} serverQueue the contract for our song queue
+ * @param  {function} volumeFunction function that returns an integer volume
+ */
+const setVolume = (serverQueue) => (volumeFunction) => {
+  serverQueue.volume = volumeFunction(serverQueue);
+  serverQueue.connection.dispatcher.setVolumeLogarithmic(
+      serverQueue.volume / 5
+  );
+};
+
+/**
+ * mutate serverQueue object to increase audio volume
+ * @param  {Object} serverQueue the contract for our song queue
+ */
+const increaseVolume = (serverQueue) => {
+  setVolume(serverQueue)((serverQueue) => Math.min(5, serverQueue.volume + 1));
+};
+
+/**
+ * mutate serverQueue object to decrease audio volume
+ * @param  {Object} serverQueue the contract for our song queue
+ */
+const decreaseVolume = (serverQueue) => {
+  setVolume(serverQueue)((serverQueue) => Math.max(0, serverQueue.volume - 1));
+};
+
+/**
  * Adjust the stream volume
  * @param  {Message} message     The Discord message we're responding to
  * @param  {Object} serverQueue the contract for our song queue
@@ -35,16 +64,10 @@ function execute(message, {serverQueue, args} = {}) {
 
   if (isNaN(volume)) {
     if (uppers.has(args[0])) {
-      serverQueue.volume = Math.min(5, serverQueue.volume + 1);
-      serverQueue.connection.dispatcher.setVolumeLogarithmic(
-          serverQueue.volume / 5
-      );
+      increaseVolume(serverQueue);
       return send(channel, volUp);
     } else if (downers.has(args[0])) {
-      serverQueue.volume = Math.max(0, serverQueue.volume - 1);
-      serverQueue.connection.dispatcher.setVolumeLogarithmic(
-          serverQueue.volume / 5
-      );
+      decreaseVolume(serverQueue);
       return send(channel, volDown);
     }
     return send(channel,
