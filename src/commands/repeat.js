@@ -1,5 +1,6 @@
 import {DIALOG} from '../dialog.json';
-import {randInt} from '../randInt.js';
+import getRandomDialog from '../getRandomDialog';
+import send from '../sendText';
 
 const name = 'repeat';
 const description = 'Repeat the current song';
@@ -17,19 +18,21 @@ export {
  * @return {Promise}             Promise for the bot's reply message
  */
 function execute(message, {serverQueue, args} = {}) {
+  const {channel} = message;
+
   if (!(serverQueue && serverQueue.songs)) {
-    message.channel.send(
+    send(channel,
         `There's no song to repeat ${message.author.username}.`
     );
     return;
   }
 
-  const dialog = DIALOG.repeat;
+  const dialog = () => getRandomDialog(DIALOG.repeat);
   const song = serverQueue.songs[0];
 
   serverQueue.songs.unshift(song);
-  return message.channel.send(
-      `${dialog[randInt(dialog.length - 1)]} repeating ${song.title} for ${
+  return send(channel,
+      `${dialog()} repeating ${song.title} for ${
         message.author.username
       }`
   );

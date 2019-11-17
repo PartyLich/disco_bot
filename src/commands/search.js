@@ -1,6 +1,8 @@
 import {RichEmbed} from 'discord.js';
 import {searchMusic} from '../searchYoutube';
 import {decodeEntities} from '../htmlEntities';
+import {cleanMessage} from '../cleanMessage';
+import send from '../sendText';
 
 const name = 'search';
 const description = 'Search youtube for a song';
@@ -27,9 +29,10 @@ const CANCEL = '❌';
  * @return {Promise}             Promise for the bot's reply message
  */
 async function execute(message, {serverQueue, args}) {
+  const {channel} = message;
   if (args.length <= 1) {
     // no search term provided
-    return message.channel.send('No search term provided');
+    return send(channel, 'No search term provided');
   }
   console.log(`${name} command execute, args:${args}`);
 
@@ -51,6 +54,7 @@ async function execute(message, {serverQueue, args}) {
       });
 }
 
+
 /**
  * Return a formatted string for a search result
  * @param  {Number} index index of the result
@@ -68,6 +72,7 @@ function formatResult(index, title, id, selected) {
         decodeEntities(title)
     )}](${YOUTUBE_VID_URL + id})`;
 }
+
 
 /**
  * Parse youtube search results into array of data we actually need
@@ -87,6 +92,7 @@ function getResultList(results, selection) {
 
   return resultList;
 }
+
 
 /**
  * Returns a `Discord.RichEmbed` for the given resultList array
@@ -108,6 +114,7 @@ function getEmbed(color, resultList) {
   return embed;
 }
 
+
 /**
  * Decrement the selected song index
  * @param  {Message} message The Discord message we're responding to
@@ -124,6 +131,7 @@ function navUp({message, results, selection}) {
   }
   return selection;
 }
+
 
 /**
  * Increment the selected song index
@@ -142,6 +150,7 @@ function navDown({message, results, selection}) {
   return selection;
 }
 
+
 /**
  * Respond to user song selection
  * @param {Object} args
@@ -155,6 +164,7 @@ function accept({message, collector, selection}) {
   collector.stop(ACCEPT);
 }
 
+
 /**
 * Stop the current search process
 * @param {Object} args
@@ -166,6 +176,7 @@ function cancel({message, collector}) {
   message.channel.send(`Changed your mind?`);
   collector.stop(CANCEL);
 }
+
 
 /**
  * Collect user input and dispatch actions
@@ -231,9 +242,29 @@ function collectResponse(response, message, results) {
         const result = YOUTUBE_VID_URL + results.items[selection].id.videoId;
         resolve(result);
       } else {
-        response.delete();
+        cleanMessage(response);
         reject(new Error('Search canceled by user'));
       }
+    });
+
+    const reNumMatch = new RegExp(`\s?([1-${MAX_RESULTS}])[^\d]?\s?`);
+    const txtFilter = (_message) =>
+      _message.author.id === message.author.id &&
+      reNumMatch.test(_message.content);
+    const txtCollector = response.channel.createCollector(txtFilter, {
+      maxMatches: 1,
+      ...collectorOptions,
+    });
+
+    // Respond to user text input
+    txtCollector.on('collect', (message) => {
+      selection = parseInt(message.content.match(reNumMatch)[1]) - 1;
+      cleanMessage(message);
+      console.log(`txtCollector set selection to ${selection}`);
+    });
+
+    txtCollector.on('end', (/* collected, reason */) => {
+      collector.stop(ACCEPT);
     });
   });
 }

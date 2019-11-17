@@ -1,5 +1,6 @@
 import {DIALOG} from '../dialog.json';
-import {randInt} from '../randInt.js';
+import getRandomDialog from '../getRandomDialog';
+import send from '../sendText';
 
 const name = 'skip';
 const description = 'End playback of current song';
@@ -17,9 +18,11 @@ export {
  * @return {Promise}             Promise for the bot's reply message
  */
 function execute(message, {serverQueue, args} = {}) {
-  const dialog = DIALOG.skip;
+  const dialog = () => getRandomDialog(DIALOG.skip);
+  const {channel} = message;
+
   if (!message.member.voiceChannel) {
-    return message.channel.send(
+    return send(channel,
         'Can\'t stop won\'t stop! (You have to be in a voice channel to stop the music!)'
     );
   }
@@ -29,7 +32,7 @@ function execute(message, {serverQueue, args} = {}) {
   }
 
   serverQueue.connection.dispatcher.end();
-  message.channel.send(
-      `${dialog[randInt(dialog.length - 1)]} (skipping to the next song)`
+  send(channel,
+      `${dialog()} (skipping to the next song)`
   );
 }

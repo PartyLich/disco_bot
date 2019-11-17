@@ -1,8 +1,8 @@
 {
   "name": "disco_bot",
-  "version": "0.10.0",
+  "version": "0.16.1",
   "description": "Discord music bot featuring Lucio",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
     "startb": "babel-node src/index.js",

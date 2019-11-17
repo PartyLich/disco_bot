@@ -1,5 +1,6 @@
 import {DIALOG} from '../dialog.json';
-import {randInt} from '../randInt.js';
+import send from '../sendText';
+import getRandomDialog from '../getRandomDialog';
 
 const name = 'vol';
 const description = 'Adjust the stream volume';
@@ -11,48 +12,71 @@ export {
 };
 
 /**
+ * mutate serverQueue object to change audio volume according to volumeFunction
+ * return value
+ * @param  {Object} serverQueue the contract for our song queue
+ * @param  {function} volumeFunction function that returns an integer volume
+ */
+const setVolume = (serverQueue) => (volumeFunction) => {
+  serverQueue.volume = volumeFunction(serverQueue);
+  serverQueue.connection.dispatcher.setVolumeLogarithmic(
+      serverQueue.volume / 5
+  );
+};
+
+/**
+ * mutate serverQueue object to increase audio volume
+ * @param  {Object} serverQueue the contract for our song queue
+ */
+const increaseVolume = (serverQueue) => {
+  setVolume(serverQueue)((serverQueue) => Math.min(5, serverQueue.volume + 1));
+};
+
+/**
+ * mutate serverQueue object to decrease audio volume
+ * @param  {Object} serverQueue the contract for our song queue
+ */
+const decreaseVolume = (serverQueue) => {
+  setVolume(serverQueue)((serverQueue) => Math.max(0, serverQueue.volume - 1));
+};
+
+/**
  * Adjust the stream volume
  * @param  {Message} message     The Discord message we're responding to
  * @param  {Object} serverQueue the contract for our song queue
  * @return {Promise}             Promise for the bot's reply message
  */
 function execute(message, {serverQueue, args} = {}) {
+  const {channel} = message;
   if (!serverQueue) {
-    return message.channel.send(
+    return send(channel,
         `There is only silence ${message.author.username}.`
     );
   }
 
-  const dialogUp = DIALOG.volumeUp;
-  const dialogDown = DIALOG.volumeDown;
+  const dialogUp = () => getRandomDialog(DIALOG.volumeUp);
+  const dialogDown = () => getRandomDialog(DIALOG.volumeDown);
   const uppers = new Set(['up', 'louder']);
   const downers = new Set(['down', 'quieter']);
-  // const args = message.content.split(' ');
   const volume = parseInt(args[0]);
-  const volUp = `${dialogUp[randInt(dialogUp.length - 1)]} (volume up)`;
-  const volDown = `${dialogDown[randInt(dialogDown.length - 1)]} (volume down)`;
+  const volUp = `${dialogUp()} (volume up)`;
+  const volDown = `${dialogDown()} (volume down)`;
 
   if (isNaN(volume)) {
     if (uppers.has(args[0])) {
-      serverQueue.volume = Math.min(5, serverQueue.volume + 1);
-      serverQueue.connection.dispatcher.setVolumeLogarithmic(
-          serverQueue.volume / 5
-      );
-      return message.channel.send(volUp);
+      increaseVolume(serverQueue);
+      return send(channel, volUp);
     } else if (downers.has(args[0])) {
-      serverQueue.volume = Math.max(0, serverQueue.volume - 1);
-      serverQueue.connection.dispatcher.setVolumeLogarithmic(
-          serverQueue.volume / 5
-      );
-      return message.channel.send(volDown);
+      decreaseVolume(serverQueue);
+      return send(channel, volDown);
     }
-    return message.channel.send(
+    return send(channel,
         `Sorry ${message.author.username}, ${args[0]} isn't a volume I understand`
     );
   }
 
   if (volume > 5 || volume < 0) {
-    return message.channel.send(
+    return send(channel,
         `Sorry ${message.author.username}, ${args[1]} must be between 0 and 5 inclusive.`
     );
   } else {
@@ -64,6 +88,6 @@ function execute(message, {serverQueue, args} = {}) {
       );
     }
 
-    return message.channel.send(`${response}`);
+    return send(channel, `${response}`);
   }
 }

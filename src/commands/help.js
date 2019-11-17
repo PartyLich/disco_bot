@@ -1,4 +1,5 @@
 import {prefix} from '../config.json';
+import send from '../sendText';
 
 const name = 'help';
 const description = 'A list of the commands you can give me.';
@@ -18,6 +19,7 @@ export {
  */
 function execute(message) {
   const {commands} = message.client;
+  const {channel} = message;
   const user = message.member.nickname;
   const commandList = [];
 
@@ -35,5 +37,5 @@ function execute(message) {
 
   commandList.push('```');
 
-  return message.channel.send(commandList);
+  return send(channel, commandList);
 }

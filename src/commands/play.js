@@ -2,6 +2,7 @@ import ytdl from 'ytdl-core';
 import {playVoiceLine} from '../playVoiceLine.js';
 import {getSongEmbed} from '../songEmbed';
 import Song from '../song';
+import send from '../sendText.js';
 
 const name = 'play';
 const description = 'Play the requested song';
@@ -23,18 +24,19 @@ export {
  */
 async function execute(message, {serverQueue, args}) {
   const voiceChannel = message.member.voiceChannel;
+  const textChannel = message.channel;
   const queue = args[args.length - 1];
 
   // check if user is in voice channel
   if (!voiceChannel) {
-    return message.channel.send(
+    return send(textChannel,
         'You need to be in a voice channel to play music!'
     );
   }
   // check if the bot has the right permissions
   const permissions = voiceChannel.permissionsFor(message.client.user);
   if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
-    return message.channel.send(
+    return send(textChannel,
         'I need the permissions to join and speak in your voice channel!'
     );
   }
@@ -72,24 +74,20 @@ async function execute(message, {serverQueue, args}) {
       // Update bot activity
       message.client.user.setActivity(playActivity);
 
-      return message.channel.send(
-          getSongEmbed(song, 'queue')
-      );
+      return send(textChannel, getSongEmbed(song, 'queue'));
     } catch (err) {
       // Print error message if the bot fails to join the voicechat
       console.error(err);
       queue.delete(message.guild.id);
       message.client.user.setActivity(idleActivity, {type: 'LISTENING'});
-      return message.channel.send(err);
+      return send(textChannel, err);
     }
   } else {
     // Add the song to our existing serverQueue and send a success message.
     serverQueue.songs.push(song);
     console.log(serverQueue.songs);
 
-    return message.channel.send(
-        getSongEmbed(song, 'queue')
-    );
+    return send(textChannel, getSongEmbed(song, 'queue'));
   }
 }
 
@@ -113,28 +111,55 @@ async function play(message, {serverQueue, args: [song, ...args]} = {}) {
   }
 
   // start playback using the playStream() function and the URL of our song.
-  const opts = {filter: 'audioonly'};
-  const streamOptions = {seek: 0, volume: 1};
+  const opts = {
+    filter: 'audioonly',
+    highWaterMark: 1<<25,
+  };
+  const streamOptions = {seek: 0, volume: 1, passes: 3};
   const songStream = ytdl(song.url, opts);
   // Play a voice line
   await playVoiceLine(serverQueue, 'play');
   let dispatcher;
+  let starttime = 0;
 
   if (song.file === '') {
     dispatcher = serverQueue.connection.playStream(songStream, streamOptions);
-    dispatcher.on('end', onEnd).on('error', onError);
+    dispatcher
+        .on('end', onEnd)
+        .on('error', onError)
+        .on('start', onStart);
   } else {
     dispatcher = serverQueue.connection.playFile(song.file);
-    dispatcher.on('end', onEnd).on('error', onError);
+    dispatcher
+        .on('end', onEnd)
+        .on('error', onError)
+        .on('start', onStart);
   }
 
   dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
+
+  /**
+   * Create timeout to display next song in the queue when the current song is
+   *  nearing completion.
+   */
+  function onStart() {
+    starttime = Date.now();
+    const notice = song.lengthSeconds * 1000 * 0.95;
+    song.timeout = setTimeout(() => {
+      const {name: commandName} = require('./next');
+      const command = message.client.commands.get(commandName);
+      command.execute(message, {serverQueue, args: []});
+    }, notice);
+    console.log(`Playback started: ${song.title}`);
+  }
 
   /**
    * Play the next song and remove completed song from queue
    */
   function onEnd() {
     console.log(`Playback ended: ${song.title}`);
+    console.log(`Stored length: ${song.lengthSeconds} Time elapsed: ${
+      (Date.now() - starttime) / 1000}`);
     serverQueue.songs.shift();
     play(message, {serverQueue, args: [serverQueue.songs[0], queue]});
   }
@@ -144,6 +169,7 @@ async function play(message, {serverQueue, args: [song, ...args]} = {}) {
    * @param  {String} e error that was thrown/raised
    */
   function onError(e) {
+    message.channel.send('An error occurred during stream.');
     console.error(e);
   }
 }

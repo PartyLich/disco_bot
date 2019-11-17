@@ -1,4 +1,5 @@
 import {getSongEmbed} from '../songEmbed';
+import send from '../sendText';
 
 const name = 'current';
 const description = 'Display currently playing song info';
@@ -22,10 +23,10 @@ export {
  * @param  {Object}   serverQueue the contract for our song queue
  * @return {Promise}             Promise for the bot's reply message
  */
-function execute(message, {serverQueue: {songs = []} = {}, args} = {}) {
+function execute({channel}, {serverQueue: {songs = []} = {}, args} = {}) {
   if (songs.length < 1) {
-    return message.channel.send(`There's nothing in the queue.`);
+    return send(channel, `There's nothing in the queue.`);
   }
 
-  return message.channel.send(getSongEmbed(songs[0], 'now'));
+  return send(channel, getSongEmbed(songs[0], 'now'));
 }
