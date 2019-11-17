@@ -6,22 +6,17 @@
  */
 export default function Song(songInfo, requestor) {
   const songFile = '';
-  const lenSeconds = ('00' + (songInfo.length_seconds % 60)).slice(-2);
-  const lenMinutes = ('00' + Math.floor(songInfo.length_seconds / 60)).slice(
-      -2
-  );
-  const lenString = `${lenMinutes}:${lenSeconds}`;
-  const thumbnail = getThumbnail(songInfo);
-  console.log(`song thumbnail: ${thumbnail}`);
+  // TODO: use a lens
+  const len = viewLength(songInfo);
 
   return {
-    title: songInfo.title,
+    title: songInfo.player_response.videoDetails.title,
     url: songInfo.video_url,
     file: songFile,
-    length: lenString,
-    lengthSeconds: songInfo.length_seconds,
+    length: len.string,
+    lengthSeconds: len.lengthSeconds,
     requestor,
-    thumbnail,
+    thumbnail: getThumbnail(songInfo),
   };
 }
 
@@ -35,4 +30,26 @@ function getThumbnail(songInfo) {
   const {url: thumbnail} = thumbnails[thumbnails.length - 1];
 
   return thumbnail;
+}
+
+/**
+ * Get song length info from songInfo object
+ * @param {Object} songInfo ytdl songInfo
+ * @return {String} thumbnail url
+ */
+function viewLength(songInfo) {
+  if (!songInfo.player_response.videoDetails.lengthSeconds) {
+    return {
+      string: '?:?',
+      lengthSeconds: 0,
+    };
+  }
+
+  const {lengthSeconds} = songInfo.player_response.videoDetails;
+  const lenMinutes = ('00' + Math.floor(lengthSeconds / 60)).slice(-2);
+
+  return {
+    string: `${lenMinutes}:${('00' + (lengthSeconds % 60)).slice(-2)}`,
+    lengthSeconds,
+  };
 }
