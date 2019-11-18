@@ -241,6 +241,15 @@ function makeTxtCollector(message, response, options) {
   });
 }
 
+function onTextCollect(message, setSelection) {
+  const reNumMatch = new RegExp(`\s?([1-${MAX_RESULTS}])[^\d]?\s?`);
+
+  return (message) => {
+    setSelection(parseInt(message.content.match(reNumMatch)[1]) - 1);
+    cleanMessage(message);
+  };
+}
+
 /**
  * Collect user input and dispatch actions
  * @param  {Message} response the bot's response message
@@ -276,15 +285,10 @@ function collectResponse(response, message, results) {
     collector.on('end', onEnd(resolve, reject, results, response, getSelection));
 
     // Text collector
-    const reNumMatch = new RegExp(`\s?([1-${MAX_RESULTS}])[^\d]?\s?`);
     const txtCollector = makeTxtCollector(message, response, collectorOptions);
 
     // Respond to user text input
-    txtCollector.on('collect', (message) => {
-      selection = parseInt(message.content.match(reNumMatch)[1]) - 1;
-      cleanMessage(message);
-      console.log(`txtCollector set selection to ${selection}`);
-    });
+    txtCollector.on('collect', onTextCollect(message, setSelection));
 
     txtCollector.on('end', (/* collected, reason */) => {
       collector.stop(ACCEPT);
