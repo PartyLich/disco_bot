@@ -1,6 +1,6 @@
 {
   "name": "disco_bot",
-  "version": "0.16.1",
+  "version": "0.17.0",
   "description": "Discord music bot featuring Lucio",
   "main": "src/index.js",
   "scripts": {
@@ -34,9 +34,10 @@
     "bufferutil": "^4.0.1",
     "discord.js": "^11.5.1",
     "ffmpeg": "0.0.4",
-    "ffmpeg-static": "^2.4.0",
+    "ffmpeg-static": "^2.5.0",
     "fluent-ffmpeg": "^2.1.2",
     "node-opus": "^0.3.2",
+    "ramda": "^0.26.1",
     "ytdl-core": "^0.29.2"
   },
   "devDependencies": {
@@ -49,6 +50,6 @@
     "eslint": "^5.16.0",
     "eslint-config-google": "^0.13.0",
     "nodemon": "^1.19.1",
-    "tape": "^4.10.2"
+    "tape": "^4.11.0"
   }
 }

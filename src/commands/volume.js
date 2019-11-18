@@ -24,21 +24,9 @@ const setVolume = (serverQueue) => (volumeFunction) => {
   );
 };
 
-/**
- * mutate serverQueue object to increase audio volume
- * @param  {Object} serverQueue the contract for our song queue
- */
-const increaseVolume = (serverQueue) => {
-  setVolume(serverQueue)((serverQueue) => Math.min(5, serverQueue.volume + 1));
-};
+const increase = (serverQueue) => Math.min(5, serverQueue.volume + 1);
+const decrease = (serverQueue) => Math.max(0, serverQueue.volume - 1);
 
-/**
- * mutate serverQueue object to decrease audio volume
- * @param  {Object} serverQueue the contract for our song queue
- */
-const decreaseVolume = (serverQueue) => {
-  setVolume(serverQueue)((serverQueue) => Math.max(0, serverQueue.volume - 1));
-};
 
 /**
  * Adjust the stream volume
@@ -64,10 +52,10 @@ function execute(message, {serverQueue, args} = {}) {
 
   if (isNaN(volume)) {
     if (uppers.has(args[0])) {
-      increaseVolume(serverQueue);
+      setVolume(serverQueue)(increase);
       return send(channel, volUp);
     } else if (downers.has(args[0])) {
-      decreaseVolume(serverQueue);
+      setVolume(serverQueue)(decrease);
       return send(channel, volDown);
     }
     return send(channel,

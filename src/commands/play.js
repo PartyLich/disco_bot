@@ -128,6 +128,7 @@ async function play(message, {serverQueue, args: [song, ...args]} = {}) {
         .on('end', onEnd)
         .on('error', onError)
         .on('start', onStart);
+    songStream.on('error', onError);
   } else {
     dispatcher = serverQueue.connection.playFile(song.file);
     dispatcher
