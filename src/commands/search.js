@@ -177,6 +177,128 @@ function cancel({message, collector}) {
   collector.stop(CANCEL);
 }
 
+/**
+ * make reaction collector
+ * @param  {Message} message  the originating message
+ * @param  {Message} response the bot's response message
+ * @param  {object} options  collector config options
+ * @return {ReactionCollector}
+ */
+function makeCollector(message, response, options) {
+  const nav = [
+    NAV_UP,
+    NAV_DOWN,
+    ACCEPT,
+    CANCEL,
+  ];
+  const filter = (reaction, user) =>
+    user.id === message.author.id && nav.includes(reaction.emoji.name);
+
+  return response.createReactionCollector(
+      filter,
+      options
+  );
+}
+
+
+/**
+ * respond to reaction collector 'collect' event
+ * @param  {Message} response the bot's response message
+ * @param  {Message} message  the originating message
+ * @param  {Object} results youtube search API results object
+ * @param  {function} selection function that returns selected song index
+ * @param  {function} setSelection function to update selected song index
+ * @return {function}
+ */
+function onCollect(response, message, results, selection, setSelection) {
+  const commands = new Map([
+    [NAV_UP, navUp],
+    [NAV_DOWN, navDown],
+    [ACCEPT, accept],
+    [CANCEL, cancel],
+  ]);
+
+  return (reaction, reactionCollector) => {
+    console.log(`Collected ${reaction.emoji.name}, `);
+    if (commands.has(reaction.emoji.name)) {
+      reaction.remove(message.author);
+      setSelection(commands.get(reaction.emoji.name)({
+        message: response,
+        selection: selection(),
+        results,
+        collector: reactionCollector,
+        reaction,
+      }));
+    }
+  };
+}
+
+/**
+ * respond to reaction collector 'end' event
+ * @param  {function} resolve  promise resolve function
+ * @param  {function} reject   promise reject function
+ * @param  {Object} results youtube search API results object
+ * @param  {Message} response the bot's response message
+ * @param  {function} selection function that returns selected song index
+ * @return {function}
+ */
+function onEnd(resolve, reject, results, response, selection) {
+  return (collected, reason) => {
+    console.log(`Collected ${collected.size} items`);
+    if (reason === ACCEPT) {
+      const result = YOUTUBE_VID_URL + results.items[selection()].id.videoId;
+      resolve(result);
+    } else {
+      cleanMessage(response);
+      reject(new Error('Search canceled by user'));
+    }
+  };
+}
+
+/**
+ * create a text collector
+ * @param  {Message} message  the originating message
+ * @param  {Message} response the bot's response message
+ * @param  {object} options  collector options
+ * @return {Collector}
+ */
+function makeTxtCollector(message, response, options) {
+  const reNumMatch = new RegExp(`\s?([1-${MAX_RESULTS}])[^\d]?\s?`);
+  const txtFilter = (_message) =>
+    _message.author.id === message.author.id &&
+    reNumMatch.test(_message.content);
+
+  return response.channel.createCollector(txtFilter, {
+    maxMatches: 1,
+    ...options,
+  });
+}
+
+/**
+ * respond to text collector 'collect' event
+ * @param  {Message} message  the originating message
+ * @param  {function} setSelection callback to update the selection index
+ * @return {function}
+ */
+function onTextCollect(message, setSelection) {
+  const reNumMatch = new RegExp(`\s?([1-${MAX_RESULTS}])[^\d]?\s?`);
+
+  return (message) => {
+    setSelection(parseInt(message.content.match(reNumMatch)[1]) - 1);
+    cleanMessage(message);
+  };
+}
+
+/**
+ * respond to text collector 'end' event
+ * @param {object} collector
+ * @return {function}
+ */
+function onTextEnd(collector) {
+  return (/* collected, reason */) => {
+    collector.stop(ACCEPT);
+  };
+}
 
 /**
  * Collect user input and dispatch actions
@@ -187,19 +309,11 @@ function cancel({message, collector}) {
  */
 function collectResponse(response, message, results) {
   return new Promise((resolve, reject) => {
-    const nav = [
-      NAV_UP,
-      NAV_DOWN,
-      ACCEPT,
-      CANCEL,
-    ];
-    const commands = new Map([
-      [NAV_UP, navUp],
-      [NAV_DOWN, navDown],
-      [ACCEPT, accept],
-      [CANCEL, cancel],
-    ]);
     let selection = 0;
+    const setSelection = (index) => {
+      selection = index;
+    };
+    const getSelection = () => selection;
 
     // Prompt user with input options
     response
@@ -212,59 +326,19 @@ function collectResponse(response, message, results) {
           reject(err);
         });
 
-    const filter = (reaction, user) =>
-      user.id === message.author.id && nav.includes(reaction.emoji.name);
     const collectorOptions = {
       time: 90 * 1000,
     };
-    const collector = response.createReactionCollector(
-        filter,
-        collectorOptions
-    );
+    const collector = makeCollector(message, response, collectorOptions);
 
-    collector.on('collect', (reaction, reactionCollector) => {
-      console.log(`Collected ${reaction.emoji.name}, `);
-      if (commands.has(reaction.emoji.name)) {
-        reaction.remove(message.author);
-        selection = commands.get(reaction.emoji.name)({
-          message: response,
-          selection,
-          results,
-          collector: reactionCollector,
-          reaction,
-        });
-      }
-    });
+    collector.on('collect', onCollect(response, message, results, getSelection, setSelection));
+    collector.on('end', onEnd(resolve, reject, results, response, getSelection));
 
-    collector.on('end', (collected, reason) => {
-      console.log(`Collected ${collected.size} items`);
-      if (reason === ACCEPT) {
-        const result = YOUTUBE_VID_URL + results.items[selection].id.videoId;
-        resolve(result);
-      } else {
-        cleanMessage(response);
-        reject(new Error('Search canceled by user'));
-      }
-    });
-
-    const reNumMatch = new RegExp(`\s?([1-${MAX_RESULTS}])[^\d]?\s?`);
-    const txtFilter = (_message) =>
-      _message.author.id === message.author.id &&
-      reNumMatch.test(_message.content);
-    const txtCollector = response.channel.createCollector(txtFilter, {
-      maxMatches: 1,
-      ...collectorOptions,
-    });
+    // Text collector
+    const txtCollector = makeTxtCollector(message, response, collectorOptions);
 
     // Respond to user text input
-    txtCollector.on('collect', (message) => {
-      selection = parseInt(message.content.match(reNumMatch)[1]) - 1;
-      cleanMessage(message);
-      console.log(`txtCollector set selection to ${selection}`);
-    });
-
-    txtCollector.on('end', (/* collected, reason */) => {
-      collector.stop(ACCEPT);
-    });
+    txtCollector.on('collect', onTextCollect(message, setSelection));
+    txtCollector.on('end', onTextEnd(collector));
   });
 }
