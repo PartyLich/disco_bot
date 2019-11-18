@@ -34,7 +34,7 @@
     "bufferutil": "^4.0.1",
     "discord.js": "^11.5.1",
     "ffmpeg": "0.0.4",
-    "ffmpeg-static": "^2.4.0",
+    "ffmpeg-static": "^2.5.0",
     "fluent-ffmpeg": "^2.1.2",
     "node-opus": "^0.3.2",
     "ramda": "^0.26.1",
@@ -50,6 +50,6 @@
     "eslint": "^5.16.0",
     "eslint-config-google": "^0.13.0",
     "nodemon": "^1.19.1",
-    "tape": "^4.10.2"
+    "tape": "^4.11.0"
   }
 }
