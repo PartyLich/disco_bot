@@ -20,7 +20,7 @@ export {
  * @return {Promise}             Promise for the bot's reply message
  */
 async function execute(message, {serverQueue, args = []}) {
-  const nyanUrl = 'https://youtu.be/4UdhuYsU0dM';
+  const NYAN_URL = 'https://youtu.be/4UdhuYsU0dM';
   const voiceChannel = message.member.voiceChannel;
   const textChannel = message.channel;
 
@@ -29,15 +29,14 @@ async function execute(message, {serverQueue, args = []}) {
     return;
     // TODO: dm member about voice channel
   }
-
-  const songInfo = await ytdl.getInfo(nyanUrl);
+  const songInfo = await ytdl.getInfo(NYAN_URL);
   const song = new Song(songInfo, message.member);
 
   if (!serverQueue) {
     // use standard play function
     const {name: commandName} = require('./play');
     const command = message.client.commands.get(commandName);
-    const playArgs = [nyanUrl, args[args.length - 1]];
+    const playArgs = [NYAN_URL, args[args.length - 1]];
     command.execute(message, {serverQueue, args: playArgs});
   } else {
     // Pull a little sneaky on 'em
