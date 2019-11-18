@@ -1,4 +1,8 @@
 import {zeroPad} from './util';
+import {compose, lensPath, lensProp, view} from 'ramda';
+
+const detailsLens = lensPath(['player_response', 'videoDetails']);
+const titleLens = compose(detailsLens, lensProp('title'));
 
 /**
  * Generate Song object from ytdl songInfo
@@ -8,17 +12,16 @@ import {zeroPad} from './util';
  */
 export default function Song(songInfo, requestor) {
   const songFile = '';
-  // TODO: use a lens
-  const len = viewLength(songInfo);
+  const len = viewLength(view(detailsLens, songInfo));
 
   return {
-    title: songInfo.player_response.videoDetails.title,
+    title: view(titleLens, songInfo),
     url: songInfo.video_url,
     file: songFile,
     length: len.string,
     lengthSeconds: len.lengthSeconds,
     requestor,
-    thumbnail: getThumbnail(songInfo),
+    thumbnail: getThumbnail(view(detailsLens, songInfo)),
   };
 }
 
@@ -28,7 +31,7 @@ export default function Song(songInfo, requestor) {
  * @return {String} thumbnail url
  */
 function getThumbnail(songInfo) {
-  const {thumbnails} = songInfo.player_response.videoDetails.thumbnail;
+  const {thumbnails} = songInfo.thumbnail;
   const {url: thumbnail} = thumbnails[thumbnails.length - 1];
 
   return thumbnail;
@@ -39,15 +42,14 @@ function getThumbnail(songInfo) {
  * @param {Object} songInfo ytdl songInfo
  * @return {String} thumbnail url
  */
-function viewLength(songInfo) {
-  if (!songInfo.player_response.videoDetails.lengthSeconds) {
+function viewLength({lengthSeconds}) {
+  if (!lengthSeconds) {
     return {
       string: '?:?',
       lengthSeconds: 0,
     };
   }
 
-  const {lengthSeconds} = songInfo.player_response.videoDetails;
   const lenMinutes = zeroPad(2, Math.floor(lengthSeconds / 60));
 
   return {
