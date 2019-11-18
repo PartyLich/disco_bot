@@ -177,6 +177,13 @@ function cancel({message, collector}) {
   collector.stop(CANCEL);
 }
 
+/**
+ * make reaction collector
+ * @param  {Message} message  the originating message
+ * @param  {Message} response the bot's response message
+ * @param  {object} options  collector config options
+ * @return {ReactionCollector}
+ */
 function makeCollector(message, response, options) {
   const nav = [
     NAV_UP,
@@ -193,6 +200,16 @@ function makeCollector(message, response, options) {
   );
 }
 
+
+/**
+ * respond to reaction collector 'collect' event
+ * @param  {Message} response the bot's response message
+ * @param  {Message} message  the originating message
+ * @param  {Object} results youtube search API results object
+ * @param  {function} selection function that returns selected song index
+ * @param  {function} setSelection function to update selected song index
+ * @return {function}
+ */
 function onCollect(response, message, results, selection, setSelection) {
   const commands = new Map([
     [NAV_UP, navUp],
@@ -216,6 +233,15 @@ function onCollect(response, message, results, selection, setSelection) {
   };
 }
 
+/**
+ * respond to reaction collector 'end' event
+ * @param  {function} resolve  promise resolve function
+ * @param  {function} reject   promise reject function
+ * @param  {Object} results youtube search API results object
+ * @param  {Message} response the bot's response message
+ * @param  {function} selection function that returns selected song index
+ * @return {function}
+ */
 function onEnd(resolve, reject, results, response, selection) {
   return (collected, reason) => {
     console.log(`Collected ${collected.size} items`);
@@ -229,6 +255,13 @@ function onEnd(resolve, reject, results, response, selection) {
   };
 }
 
+/**
+ * create a text collector
+ * @param  {Message} message  the originating message
+ * @param  {Message} response the bot's response message
+ * @param  {object} options  collector options
+ * @return {Collector}
+ */
 function makeTxtCollector(message, response, options) {
   const reNumMatch = new RegExp(`\s?([1-${MAX_RESULTS}])[^\d]?\s?`);
   const txtFilter = (_message) =>
@@ -241,6 +274,12 @@ function makeTxtCollector(message, response, options) {
   });
 }
 
+/**
+ * respond to text collector 'collect' event
+ * @param  {Message} message  the originating message
+ * @param  {function} setSelection callback to update the selection index
+ * @return {function}
+ */
 function onTextCollect(message, setSelection) {
   const reNumMatch = new RegExp(`\s?([1-${MAX_RESULTS}])[^\d]?\s?`);
 
@@ -250,6 +289,11 @@ function onTextCollect(message, setSelection) {
   };
 }
 
+/**
+ * respond to text collector 'end' event
+ * @param {object} collector
+ * @return {function}
+ */
 function onTextEnd(collector) {
   return (/* collected, reason */) => {
     collector.stop(ACCEPT);
