@@ -216,6 +216,19 @@ function onCollect(response, message, results, selection, setSelection) {
   };
 }
 
+function onEnd(resolve, reject, results, response, selection) {
+  return (collected, reason) => {
+    console.log(`Collected ${collected.size} items`);
+    if (reason === ACCEPT) {
+      const result = YOUTUBE_VID_URL + results.items[selection()].id.videoId;
+      resolve(result);
+    } else {
+      cleanMessage(response);
+      reject(new Error('Search canceled by user'));
+    }
+  };
+}
+
 /**
  * Collect user input and dispatch actions
  * @param  {Message} response the bot's response message
@@ -248,16 +261,7 @@ function collectResponse(response, message, results) {
     const collector = makeCollector(message, response, collectorOptions);
 
     collector.on('collect', onCollect(response, message, results, getSelection, setSelection));
-    collector.on('end', (collected, reason) => {
-      console.log(`Collected ${collected.size} items`);
-      if (reason === ACCEPT) {
-        const result = YOUTUBE_VID_URL + results.items[selection].id.videoId;
-        resolve(result);
-      } else {
-        cleanMessage(response);
-        reject(new Error('Search canceled by user'));
-      }
-    });
+    collector.on('end', onEnd(resolve, reject, results, response, getSelection));
 
     const reNumMatch = new RegExp(`\s?([1-${MAX_RESULTS}])[^\d]?\s?`);
     const txtFilter = (_message) =>
