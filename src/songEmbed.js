@@ -33,15 +33,14 @@ export function getSongEmbed(song, action) {
 function getActionText(action) {
   const dialog = DIALOG.play;
   const info = {};
+  info.title = `${dialog[randInt(dialog.length - 1)]}`;
 
   switch (action) {
     case 'queue':
-      info.title = `${dialog[randInt(dialog.length - 1)]}`;
       info.description = `Song has been added to the queue!`;
       break;
 
     case 'next':
-      info.title = `${dialog[randInt(dialog.length - 1)]}`;
       info.description = `Coming up next!`;
       break;
 
