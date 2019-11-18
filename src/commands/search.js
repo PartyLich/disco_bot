@@ -229,6 +229,18 @@ function onEnd(resolve, reject, results, response, selection) {
   };
 }
 
+function makeTxtCollector(message, response, options) {
+  const reNumMatch = new RegExp(`\s?([1-${MAX_RESULTS}])[^\d]?\s?`);
+  const txtFilter = (_message) =>
+    _message.author.id === message.author.id &&
+    reNumMatch.test(_message.content);
+
+  return response.channel.createCollector(txtFilter, {
+    maxMatches: 1,
+    ...options,
+  });
+}
+
 /**
  * Collect user input and dispatch actions
  * @param  {Message} response the bot's response message
@@ -263,14 +275,9 @@ function collectResponse(response, message, results) {
     collector.on('collect', onCollect(response, message, results, getSelection, setSelection));
     collector.on('end', onEnd(resolve, reject, results, response, getSelection));
 
+    // Text collector
     const reNumMatch = new RegExp(`\s?([1-${MAX_RESULTS}])[^\d]?\s?`);
-    const txtFilter = (_message) =>
-      _message.author.id === message.author.id &&
-      reNumMatch.test(_message.content);
-    const txtCollector = response.channel.createCollector(txtFilter, {
-      maxMatches: 1,
-      ...collectorOptions,
-    });
+    const txtCollector = makeTxtCollector(message, response, collectorOptions);
 
     // Respond to user text input
     txtCollector.on('collect', (message) => {
