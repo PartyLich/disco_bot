@@ -177,6 +177,21 @@ function cancel({message, collector}) {
   collector.stop(CANCEL);
 }
 
+function makeCollector(message, response, options) {
+  const nav = [
+    NAV_UP,
+    NAV_DOWN,
+    ACCEPT,
+    CANCEL,
+  ];
+  const filter = (reaction, user) =>
+    user.id === message.author.id && nav.includes(reaction.emoji.name);
+
+  return response.createReactionCollector(
+      filter,
+      options
+  );
+}
 
 /**
  * Collect user input and dispatch actions
@@ -187,12 +202,6 @@ function cancel({message, collector}) {
  */
 function collectResponse(response, message, results) {
   return new Promise((resolve, reject) => {
-    const nav = [
-      NAV_UP,
-      NAV_DOWN,
-      ACCEPT,
-      CANCEL,
-    ];
     const commands = new Map([
       [NAV_UP, navUp],
       [NAV_DOWN, navDown],
@@ -212,15 +221,10 @@ function collectResponse(response, message, results) {
           reject(err);
         });
 
-    const filter = (reaction, user) =>
-      user.id === message.author.id && nav.includes(reaction.emoji.name);
     const collectorOptions = {
       time: 90 * 1000,
     };
-    const collector = response.createReactionCollector(
-        filter,
-        collectorOptions
-    );
+    const collector = makeCollector(message, response, collectorOptions);
 
     collector.on('collect', (reaction, reactionCollector) => {
       console.log(`Collected ${reaction.emoji.name}, `);
