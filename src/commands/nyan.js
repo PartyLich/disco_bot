@@ -33,10 +33,8 @@ async function execute(message, {serverQueue, args = []}) {
 
   if (!serverQueue) {
     // use standard play function
-    const {name: commandName} = require('./play');
-    const command = message.client.commands.get(commandName);
     const playArgs = [NYAN_URL, args[args.length - 1]];
-    command.execute(message, {serverQueue, args: playArgs});
+    standardPlay(message, serverQueue, playArgs);
   } else {
     // Pull a little sneaky on 'em
     serverQueue.songs.splice(1, 0, song);
@@ -44,4 +42,15 @@ async function execute(message, {serverQueue, args = []}) {
 
     return send(channel, getSongEmbed(song, 'queue'));
   }
+}
+
+/**
+ * use standard play function to deliver the nyans
+ * @param  {Object} serverQueue  the contract for our song queue
+ * @param {array} args
+ */
+function standardPlay(message, serverQueue, args) {
+  const {name: commandName} = require('./play');
+  const command = message.client.commands.get(commandName);
+  command.execute(message, {serverQueue, args});
 }
