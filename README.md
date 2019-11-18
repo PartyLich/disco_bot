@@ -8,17 +8,20 @@ Lucio bot is a straightforward music bot utilizing node, [discord.js](https://gi
 * Create a config.json file with your desired command prefix and API tokens. Example in ./src/config-example.json
 
 ---
-Dev 
+Dev
+
 1. `npm i`
 1. `npm run startb` or `npm run mon`
 
 Not-so-dev
+
 1. `npm i`
 1. `npm run build` or `npm run build:prod` (cleans up the src folder)
 1. `npm start`
 
 ## Contributing
 If you're interested in contributing, please
+
 * get in touch or
 * send a pull request or
 * submit an issue (bug, enhancement, feature, etc)
