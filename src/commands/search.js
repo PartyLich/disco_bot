@@ -193,6 +193,29 @@ function makeCollector(message, response, options) {
   );
 }
 
+function onCollect(response, message, results, selection, setSelection) {
+  const commands = new Map([
+    [NAV_UP, navUp],
+    [NAV_DOWN, navDown],
+    [ACCEPT, accept],
+    [CANCEL, cancel],
+  ]);
+
+  return (reaction, reactionCollector) => {
+    console.log(`Collected ${reaction.emoji.name}, `);
+    if (commands.has(reaction.emoji.name)) {
+      reaction.remove(message.author);
+      setSelection(commands.get(reaction.emoji.name)({
+        message: response,
+        selection: selection(),
+        results,
+        collector: reactionCollector,
+        reaction,
+      }));
+    }
+  };
+}
+
 /**
  * Collect user input and dispatch actions
  * @param  {Message} response the bot's response message
@@ -202,13 +225,11 @@ function makeCollector(message, response, options) {
  */
 function collectResponse(response, message, results) {
   return new Promise((resolve, reject) => {
-    const commands = new Map([
-      [NAV_UP, navUp],
-      [NAV_DOWN, navDown],
-      [ACCEPT, accept],
-      [CANCEL, cancel],
-    ]);
     let selection = 0;
+    const setSelection = (index) => {
+      selection = index;
+    };
+    const getSelection = () => selection;
 
     // Prompt user with input options
     response
@@ -226,20 +247,7 @@ function collectResponse(response, message, results) {
     };
     const collector = makeCollector(message, response, collectorOptions);
 
-    collector.on('collect', (reaction, reactionCollector) => {
-      console.log(`Collected ${reaction.emoji.name}, `);
-      if (commands.has(reaction.emoji.name)) {
-        reaction.remove(message.author);
-        selection = commands.get(reaction.emoji.name)({
-          message: response,
-          selection,
-          results,
-          collector: reactionCollector,
-          reaction,
-        });
-      }
-    });
-
+    collector.on('collect', onCollect(response, message, results, getSelection, setSelection));
     collector.on('end', (collected, reason) => {
       console.log(`Collected ${collected.size} items`);
       if (reason === ACCEPT) {
