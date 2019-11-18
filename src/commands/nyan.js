@@ -22,7 +22,6 @@ export {
 async function execute(message, {serverQueue, args = []}) {
   const NYAN_URL = 'https://youtu.be/4UdhuYsU0dM';
   const voiceChannel = message.member.voiceChannel;
-  const textChannel = message.channel;
 
   // check if user is in voice channel
   if (!voiceChannel) {
