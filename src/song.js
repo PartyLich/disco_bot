@@ -1,3 +1,5 @@
+import {zeroPad} from './util';
+
 /**
  * Generate Song object from ytdl songInfo
  * @param {Object} songInfo ytdl songInfo
@@ -46,10 +48,10 @@ function viewLength(songInfo) {
   }
 
   const {lengthSeconds} = songInfo.player_response.videoDetails;
-  const lenMinutes = ('00' + Math.floor(lengthSeconds / 60)).slice(-2);
+  const lenMinutes = zeroPad(2, Math.floor(lengthSeconds / 60));
 
   return {
-    string: `${lenMinutes}:${('00' + (lengthSeconds % 60)).slice(-2)}`,
+    string: `${lenMinutes}:${zeroPad(2, lengthSeconds % 60)}`,
     lengthSeconds,
   };
 }
