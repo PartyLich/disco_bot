@@ -250,6 +250,12 @@ function onTextCollect(message, setSelection) {
   };
 }
 
+function onTextEnd(collector) {
+  return (/* collected, reason */) => {
+    collector.stop(ACCEPT);
+  };
+}
+
 /**
  * Collect user input and dispatch actions
  * @param  {Message} response the bot's response message
@@ -289,9 +295,6 @@ function collectResponse(response, message, results) {
 
     // Respond to user text input
     txtCollector.on('collect', onTextCollect(message, setSelection));
-
-    txtCollector.on('end', (/* collected, reason */) => {
-      collector.stop(ACCEPT);
-    });
+    txtCollector.on('end', onTextEnd(collector));
   });
 }
